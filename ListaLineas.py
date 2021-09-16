@@ -1,4 +1,4 @@
-class estudiante:
+class linea:
   def __init__(self,no,componentes,tiempoE):
     self.no=no
     self.componentes=componentes
@@ -6,7 +6,7 @@ class estudiante:
     self.Actual=0
     self.Ensablar=False
     self.Prioridad= False
-    self.lista= None 
+    self.Timeout= 0
 
 
 class nodo:
@@ -14,7 +14,7 @@ class nodo:
       self.ensable=ensable
       self.siguiente=siguiente
 
-class lista_enlazada:
+class lista_brazos:
   def __init__(self):
     self.primero = None
 
@@ -61,13 +61,13 @@ class lista_enlazada:
         print("no: ", actual.ensable.no,"nombre: ")
 
 
-if __name__ == "__main__":
-    e1 = estudiante(1,1,1)
-    e2 = estudiante(2,2,2)
-    e3 = estudiante(3,3,3)
-    lista_e = lista_enlazada()
+"""if __name__ == "__main__":
+    e1 = linea(1,1,1)
+    e2 = linea(2,2,2)
+    e3 = linea(3,3,3)
+    lista_e = lista_brazos()
     lista_e.insertar(e1)
     lista_e.insertar(e2)
     lista_e.insertar(e3)
-    lista_e.recorrer()
+    lista_e.recorrer()"""
         

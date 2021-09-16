@@ -1,16 +1,14 @@
-class estudiante:
+class productos:
   def __init__(self,nombre,elaboracion):
     self.nombre=nombre
     self.elaboracion=elaboracion
-   
-
 
 class nodo:
     def __init__(self,producto =None,siguiente=None):
       self.producto=producto
       self.siguiente=siguiente
 
-class lista_enlazada:
+class lista_productos:
   def __init__(self):
     self.primero = None
 
@@ -26,7 +24,7 @@ class lista_enlazada:
   def recorrer(self):
     actual= self.primero
     while actual != None:
-      print("nombre: ", actual.producto.nombre,"Lista: ", actual.producto.elaboracion)
+      print("nombre: ", actual.producto.nombre,"elaboracion: ", actual.producto.elaboracion.recorrer())
       actual = actual.siguiente
 
   def eliminar(self,nombre):
@@ -56,14 +54,14 @@ class lista_enlazada:
       if actual.ensable.no == nombre:
         print("nombre: ", actual.ensable.nombre,"nombrembre: ")
 
-
+"""
 if __name__ == "__main__":
-    e1 = estudiante(1,1)
-    e2 = estudiante(2,2)
-    e3 = estudiante(3,3)
-    lista_e = lista_enlazada()
+    e1 = productos(1,1)
+    e2 = productos(2,2)
+    e3 = productos(3,3)
+    lista_e = lista_productos()
     lista_e.insertar(e1)
     lista_e.insertar(e2)
     lista_e.insertar(e3)
     lista_e.recorrer()
-        
+        """
