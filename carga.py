@@ -8,7 +8,6 @@ def cargarListas(xmlRuta):
     
     try:
         ruta = xmlRuta 
-
         gestion = ET.parse(ruta)
         root = gestion.getroot()
         
@@ -17,10 +16,9 @@ def cargarListas(xmlRuta):
             for lineas in maquina.iter('CantidadLineasProduccion'):
                 print(lineas.text)
 
-           
             for linea in maquina.iter('LineaProduccion'):
                 for numero in linea.iter('Numero'):
-                        print(numero.text)
+                        print(numero.text, "num")
                 for cantidad in linea.iter('CantidadComponentes'):
                         print(cantidad.text)
                 for timepo in linea.iter('TiempoEnsamblaje'):
@@ -33,7 +31,6 @@ def cargarListas(xmlRuta):
                         print(elaboracion.text)
              
 
-        
         #lista_e.recorrer() 
         print("\nArchivo Cargado con Exito\n")
         return True
