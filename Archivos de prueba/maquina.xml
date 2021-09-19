@@ -13,7 +13,6 @@
             <TiempoEnsamblaje>4</TiempoEnsamblaje>
         </LineaProduccion>
     </ListadoLineasProduccion>
-
     <ListadoProductos>
         <Producto>
             <nombre>Guitarra</nombre>

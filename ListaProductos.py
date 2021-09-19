@@ -24,7 +24,8 @@ class lista_productos:
   def recorrer(self):
     actual= self.primero
     while actual != None:
-      print("nombre: ", actual.producto.nombre,"elaboracion: ", actual.producto.elaboracion.recorrer())
+      #print("nombre: ", actual.producto.nombre,"elaboracion: ", actual.producto.elaboracion.recorrer())
+      print("nombre: ", actual.producto.nombre,"elaboracion: ", actual.producto.elaboracion)
       actual = actual.siguiente
 
   def eliminar(self,nombre):
@@ -51,8 +52,11 @@ class lista_productos:
         print("No se encontro la persona con el no:", nombre)
         break
     if actual is not None:
-      if actual.ensable.no == nombre:
-        print("nombre: ", actual.ensable.nombre,"nombrembre: ")
+      if actual.producto.nombre == nombre:
+        #print("nombre: ", actual.producto.nombre)
+        #print("Lista: ", actual.producto.elaboracion)
+        #actual.producto.elaboracion.recorrer()
+        return actual.producto
 
 """
 if __name__ == "__main__":
