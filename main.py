@@ -9,7 +9,7 @@ if __name__ == "__main__":
         txt = "Archivos de prueba/maquina.xml"
         cargarListas(txt)
         print("Exito")
-        #c.LLineas.ElaborarManual("Guitarra")
+        c.LLineas.ElaborarManual("Guitarra")
         c.LLineas.ElaborarManual("Piano")
     #except Exception:
         #print(Exception)

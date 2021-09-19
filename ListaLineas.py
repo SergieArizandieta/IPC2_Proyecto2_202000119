@@ -70,7 +70,7 @@ class lista_brazos:
 
   def ElaborarManual(self,producto):
     print("PRODUCTO", producto)
-
+    num = 0
     EstadoContinuar = False
     setPrimeaVezEnsablar = True
     ElboracionProgrsss = True
@@ -134,7 +134,10 @@ class lista_brazos:
 
                   if EstadoContinuar == False:
                     ElbaFinalizado == True
+                    ElboracionProgrsss == False
+                    num = CSegs
                     print("FINALIZA")
+                    self.reiniciar()
                     break
                   
 
@@ -160,17 +163,17 @@ class lista_brazos:
         #fin recorrer=-----------------------
 
        
-        """if CSegs == 10 or ElbaFinalizado== True:
-          #PActual.elaboracion.recorrer()
-          #self.recorrer()
-          ElboracionProgrsss = False
-          break"""
-
-        if  ElbaFinalizado== True:
+        if CSegs == num or ElbaFinalizado== True:
           #PActual.elaboracion.recorrer()
           #self.recorrer()
           ElboracionProgrsss = False
           break
+
+        """if  ElbaFinalizado== True:
+          #PActual.elaboracion.recorrer()
+          #self.recorrer()
+          ElboracionProgrsss = False
+          break"""
         
         
         #ElbaFinalizado = True
@@ -214,7 +217,17 @@ class lista_brazos:
           actualNuevo = actualNuevo.siguiente
     #Terminando Destino=-----------------------
 
+  def reiniciar(self):
+    actual= self.primero
+    while actual != None:
+      actual.ensable.Actual=0
+      actual.ensable.Prioridad= False
+      actual.ensable.Timeout= 0
+      actual.ensable.destino = 0
+      actual.ensable.noEnsamble = 0
+      actual = actual.siguiente
 
+   
 """if __name__ == "__main__":
     e1 = linea(1,1,1)
     e2 = linea(2,2,2)
