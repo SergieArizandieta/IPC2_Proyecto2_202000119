@@ -49,19 +49,8 @@ class lista_enzamblar:
       print("Posicion ensamble: ", actual.ensamble.posicionE, "posicion linea: ", actual.ensamble.Linea ,"posicion componente: ", actual.ensamble.posicionC, "Anterioe", actual.ensamble.Anterior)
       actual = actual.siguiente
 
-  def eliminar(self,posicionE):
-    actual = self.primero
-    anterior = None
 
-    while actual and actual.ensamble.posicionE != posicionE:
-      anterior = actual
-      actual = actual.siguiente
-    
-    if anterior is None:
-      self.primero = actual.siguiente
-    elif actual:
-      anterior.siguiente = actual.siguiente
-      actual.siguiente = None
+#FUNCIAONLIDADES-------------------------------------------------------------------------------------------------------------------
 
   def buscarDestino(self,posicionE):
     actual = self.primero
@@ -77,6 +66,41 @@ class lista_enzamblar:
       if actual.ensamble.Linea == posicionE and actual.ensamble.Anterior == False:
         #print("Componente buscado: ", actual.ensamble.posicionC)
         return actual.ensamble.posicionC
+
+  def InicizarlizarLinea(self):
+    actual= self.primero
+    #print("Posicion ensamble: ", actual.ensamble.posicionE, "posicion linea: ", actual.ensamble.Linea ,"posicion componente: ", actual.ensamble.posicionC, "Anterioe", actual.ensamble.Anterior)
+    return actual.ensamble.Linea
+  
+  def InicizarlizarPosicionEn(self):
+    actual= self.primero
+    return actual.ensamble.posicionE
+
+  def buscarEnsablado(self,posicionE):
+    actual = self.primero
+    anterior = None
+    while actual and actual.ensamble.Linea != posicionE:
+      anterior = actual
+      actual = actual.siguiente
+      if actual is None:
+        #print("No se encontro la persona con el no:", posicionE)
+        return 0
+
+
+#SIN USAR-------------------------------------------------------------------------------------------
+  def eliminar(self,posicionE):
+    actual = self.primero
+    anterior = None
+
+    while actual and actual.ensamble.posicionE != posicionE:
+      anterior = actual
+      actual = actual.siguiente
+    
+    if anterior is None:
+      self.primero = actual.siguiente
+    elif actual:
+      anterior.siguiente = actual.siguiente
+      actual.siguiente = None
 
   def buscar(self,posicionE):
     actual = self.primero

@@ -5,11 +5,12 @@ class linea:
     self.componentes=componentes
     self.tiempoE=tiempoE
     self.Actual=0
-    self.Ensablar=False
     self.Prioridad= False
     self.Timeout= 0
     self.destino = 0
+    self.noEnsamble = 0
 
+    self.Ensablar=False # -- No lo he usado
 
 class nodo:
     def __init__(self,ensable =None,siguiente=None):
@@ -64,6 +65,7 @@ class lista_brazos:
         print("no: ", actual.ensable.no,"nombre: ")
 
   def ElaborarManual(self,producto,valor):
+    setPrimeaVezEnsablar = True
     ElboracionProgrsss = True
     ElbaFinalizado = False
     CSegs = 0
@@ -73,31 +75,73 @@ class lista_brazos:
   
     PActual = c.Lproductos.buscar(producto)
     if PActual is not None:
-      PActual.elaboracion.recorrer()
-      #Aggregando destino-------------------------
-      actualNuevo= self.primero
-      while actualNuevo != None:
-        actualNuevo.ensable.destino =  PActual.elaboracion.buscarDestino(int(actualNuevo.ensable.no))
-        print(actualNuevo.ensable.destino)
-        actualNuevo = actualNuevo.siguiente
-      #Terminando Destino=-----------------------
+      #PActual.elaboracion.recorrer()
+
+      self.Inicializar(PActual)
+      self.AgregarDestino(PActual)
 
       while ElboracionProgrsss == True :
         CSegs += 1
+        print("Segundo",CSegs )
 
+        #Recorrer los que tengan destino-------------------------
+        actualNuevo= self.primero
+        while actualNuevo != None:
+          if actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) < actualNuevo.ensable.destino:
+            actualNuevo.ensable.Actual += 1  
+            print("Line",actualNuevo.ensable.no,"posicion actual",actualNuevo.ensable.Actual)
 
+          elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) == actualNuevo.ensable.destino:
+            if  actualNuevo.ensable.Prioridad:
 
+              if setPrimeaVezEnsablar:
+                actualNuevo.ensable.Timeout = actualNuevo.ensable.tiempoE
+                setPrimeaVezEnsablar = False
 
-        if CSegs == 5 or ElbaFinalizado== True:
+              if actualNuevo.ensable.Timeout > 0:
+                actualNuevo.ensable.Timeout -= 1
+                print("Line",actualNuevo.ensable.no, "Tiempo restante:",actualNuevo.ensable.Timeout )
+
+              elif actualNuevo.ensable.Timeout == 0:
+                print("Line",actualNuevo.ensable.no, "Tiempo Temrinado" )
+                actualNuevo.ensable.Prioridad = False
+                #PActual.elaboracion.
+              #print("Line",actualNuevo.ensable.no, "Ensamblado" )
+              
+            else:
+              print("Line",actualNuevo.ensable.no, "Ensamblado a espera")
+          actualNuevo = actualNuevo.siguiente
+        #fin recorrer=-----------------------
+
+       
+        if CSegs == 4 or ElbaFinalizado== True:
           ElboracionProgrsss = False
           break
-        #print("Hola",CSegs )
-        ElbaFinalizado = True
+        
+        
+        #ElbaFinalizado = True
     
     #print(c.Lproductos.primero.producto.nombre)
   
-
-
+  def Inicializar(self,PActual):
+    #Iniclizar primer ensamble-------------------------
+      actualNuevo= self.primero
+      while actualNuevo != None:
+        if actualNuevo.ensable.no == int( PActual.elaboracion.InicizarlizarLinea()):
+          actualNuevo.ensable.Prioridad =  True
+          actualNuevo.ensable.noEnsamble =  int( PActual.elaboracion.InicizarlizarPosicionEn())
+          break
+      actualNuevo = actualNuevo.siguiente
+      #fin inicializar=-----------------------
+      
+  def AgregarDestino(self,PActual):
+     #Aggregando destino-------------------------
+      actualNuevo= self.primero
+      while actualNuevo != None:
+        actualNuevo.ensable.destino =  PActual.elaboracion.buscarDestino(int(actualNuevo.ensable.no))
+        #print(actualNuevo.ensable.destino)
+        actualNuevo = actualNuevo.siguiente
+      #Terminando Destino=-----------------------
 """if __name__ == "__main__":
     e1 = linea(1,1,1)
     e2 = linea(2,2,2)
