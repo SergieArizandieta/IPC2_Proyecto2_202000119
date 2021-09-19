@@ -15,7 +15,7 @@ LLineas = lista_brazos()
 
 def cargarListas(xmlRuta):
     
-    #try:
+    try:
         contador = 0
         LineasDeclaradas= 0 
         ruta = xmlRuta 
@@ -66,8 +66,8 @@ def cargarListas(xmlRuta):
         print("\nArchivo Cargado con Exito\n")
         return True
     
-    #except Exception:
-        #print ("\nError en la ruta ingresada\n")
+    except Exception:
+        print ("\nError en la ruta ingresada\n")
         #return False
 
 def purificacion(text,LineasDeclaradas):
@@ -167,7 +167,7 @@ def isNumero(txt):
     else:
         return False
 
-def openExtra():
+def openMaquina():
     Tk().withdraw()
     archivo = filedialog.askopenfilename(
         title = "Seleccionar un archivo LFP",

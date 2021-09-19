@@ -52,6 +52,13 @@ class lista_enzamblar:
       print("Posicion ensamble: ", actual.ensamble.posicionE, "posicion linea: ", actual.ensamble.Linea ,"posicion componente: ", actual.ensamble.posicionC, "Anterior", actual.ensamble.Anterior, "PsoicionAnterior",actual.ensamble.AnteriorPosicionE, "ensablado", actual.ensamble.Verificado )
       actual = actual.siguiente
 
+  def Limpiar(self):
+    actual= self.primero
+    while actual != None:
+      actual.ensamble.Anterior=False
+      actual.ensamble.AnteriorPosicionE=0
+      actual.ensamble.Verificado=False
+      actual = actual.siguiente
 #FUNCIAONLIDADES-------------------------------------------------------------------------------------------------------------------
   def NuevoDestino(self,posicionE):
     actual = self.primero
