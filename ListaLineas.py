@@ -105,6 +105,8 @@ class lista_brazos:
               elif actualNuevo.ensable.Timeout == 0:
                 print("Line",actualNuevo.ensable.no, "Tiempo Temrinado" )
                 actualNuevo.ensable.Prioridad = False
+                PActual.elaboracion.buscarVerificado(actualNuevo.ensable.noEnsamble)
+                PActual.elaboracion.ActualizarAnteriores(actualNuevo.ensable.noEnsamble)
                 #PActual.elaboracion.
               #print("Line",actualNuevo.ensable.no, "Ensamblado" )
               
@@ -142,6 +144,8 @@ class lista_brazos:
         #print(actualNuevo.ensable.destino)
         actualNuevo = actualNuevo.siguiente
       #Terminando Destino=-----------------------
+
+
 """if __name__ == "__main__":
     e1 = linea(1,1,1)
     e2 = linea(2,2,2)
