@@ -7,6 +7,8 @@ class ensamble:
     self.Anterior=Anterior
     self.AnteriorPosicionE=0
     self.Verificado=False
+
+   
 class nodo:
     def __init__(self,ensamble =None,siguiente=None):
       self.ensamble=ensamble
@@ -25,8 +27,6 @@ class lista_enzamblar:
       actual = actual.siguiente
     actual.siguiente = nodo(ensamble=ensamble) 
     #---------------------------------------------------------------------------
-
-    #print(actual.siguiente.ensamble.Linea, "Aqui")
 
     posicionE = actual.siguiente.ensamble.Linea
     elaboracion = actual.siguiente.ensamble.posicionE
@@ -53,11 +53,10 @@ class lista_enzamblar:
       actual = actual.siguiente
 
 #FUNCIAONLIDADES-------------------------------------------------------------------------------------------------------------------
-
-  def buscarDestino(self,posicionE):
+  def NuevoDestino(self,posicionE):
     actual = self.primero
     anterior = None
-    while actual and actual.ensamble.Linea != posicionE:
+    while actual and (actual.ensamble.Linea != posicionE or actual.ensamble.Verificado != False):
       anterior = actual
       actual = actual.siguiente
       if actual is None:
@@ -65,10 +64,10 @@ class lista_enzamblar:
         return 0
         
     if actual is not None:
-      if actual.ensamble.Linea == posicionE and actual.ensamble.Anterior == False:
+      if actual.ensamble.Linea == posicionE and actual.ensamble.Verificado == False and actual.ensamble.Anterior == False:
         #print("Componente buscado: ", actual.ensamble.posicionC)
         return actual.ensamble.posicionC
-
+  
   def buscarVerificado(self,posicionE):
     actual = self.primero
     anterior = None
@@ -110,16 +109,48 @@ class lista_enzamblar:
             #print("Posicion ensamble: ", actual.ensamble.posicionE, "posicion linea: ", actual.ensamble.Linea ,"posicion componente: ", actual.ensamble.posicionC, "Anterioe", actual.ensamble.Anterior)
             actualNuevo = actualNuevo.siguiente
             if actualNuevo is None:
-              print("No se encontro:", posicionE)
+              #print("No se encontro:", posicionE)
               break
           if actualNuevo is not None:
             if actualNuevo.ensamble.Linea == posicionE and actualNuevo.ensamble.Anterior == True and actualNuevo.ensamble.AnteriorPosicionE == elaboracion and posicionE ==  actualNuevo.ensamble.Linea:
               actualNuevo.ensamble.Anterior = False
-              self.recorrer()
-         
-
+              
+  
+  def nuevaPrioridad(self):
+    try:
+      actual = self.primero
+      anterior = None
+      while actual and (actual.siguiente.ensamble.Verificado != False or actual.ensamble.Verificado != True) :
+        anterior = actual
+        actual = actual.siguiente
         
-          print("Encontrado", elaboracion, "Linea",posicionE )
+        if actual is None:
+          return 0
+        
+          
+      if actual is not None:
+        if actual.siguiente.ensamble.Verificado == False and actual.ensamble.Verificado == True:
+          #print("Nuevo ensamble:", actual.siguiente.ensamble.Linea   )
+          return actual.siguiente.ensamble.Linea  
+    except Exception:
+      return 0
+      
+  def NuevoCompoennete(self,posicionE):
+    actual = self.primero
+    anterior = None
+    while actual and (actual.ensamble.Linea != posicionE or actual.ensamble.Verificado != False):
+      anterior = actual
+      actual = actual.siguiente
+      if actual is None:
+        #print("No se encontro la persona con el no:", posicionE)
+        return 0
+        
+    if actual is not None:
+      if actual.ensamble.Linea == posicionE and actual.ensamble.Verificado == False and actual.ensamble.Anterior == False:
+        #print("Componente buscado: ", actual.ensamble.posicionC)
+        return actual.ensamble.posicionE
+        
+         
     
 #Inicilizar------------------------------------------------------------------------------------------------------------------
   def InicizarlizarLinea(self):
@@ -130,6 +161,21 @@ class lista_enzamblar:
   def InicizarlizarPosicionEn(self):
     actual= self.primero
     return actual.ensamble.posicionE
+
+  def buscarDestino(self,posicionE):
+    actual = self.primero
+    anterior = None
+    while actual and actual.ensamble.Linea != posicionE:
+      anterior = actual
+      actual = actual.siguiente
+      if actual is None:
+        #print("No se encontro la persona con el no:", posicionE)
+        return 0
+        
+    if actual is not None:
+      if actual.ensamble.Linea == posicionE and actual.ensamble.Anterior == False :
+        #print("Componente buscado: ", actual.ensamble.posicionC)
+        return actual.ensamble.posicionC
 
 
 #SIN USAR-------------------------------------------------------------------------------------------

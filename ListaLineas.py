@@ -1,3 +1,4 @@
+from xml.etree.ElementTree import register_namespace
 import carga as c
 class linea:
   def __init__(self,no,componentes,tiempoE):
@@ -9,6 +10,8 @@ class linea:
     self.Timeout= 0
     self.destino = 0
     self.noEnsamble = 0
+
+   
 
     self.Ensablar=False # -- No lo he usado
 
@@ -34,7 +37,8 @@ class lista_brazos:
     actual= self.primero
     while actual != None:
       #print("no: ", actual.ensable.no,"Compoenentes: ", actual.ensable.componentes, "Teimpo Ensable",actual.ensable.tiempoE )
-      print("destino: ", actual.ensable.destino )
+      print("no: ", actual.ensable.no,"destino: ", actual.ensable.destino, " noEnsamble",actual.ensable.noEnsamble )
+      #print("destino: ", actual.ensable.destino )
       actual = actual.siguiente
 
   def eliminar(self,no):
@@ -64,14 +68,17 @@ class lista_brazos:
       if actual.ensable.no == no:
         print("no: ", actual.ensable.no,"nombre: ")
 
-  def ElaborarManual(self,producto,valor):
+  def ElaborarManual(self,producto):
+    print("PRODUCTO", producto)
+
+    EstadoContinuar = False
     setPrimeaVezEnsablar = True
     ElboracionProgrsss = True
     ElbaFinalizado = False
     CSegs = 0
 
     actual = self.primero
-    print(actual.ensable.no,"----", valor)
+   
   
     PActual = c.Lproductos.buscar(producto)
     if PActual is not None:
@@ -87,11 +94,15 @@ class lista_brazos:
         #Recorrer los que tengan destino-------------------------
         actualNuevo= self.primero
         while actualNuevo != None:
+
           if actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) < actualNuevo.ensable.destino:
             actualNuevo.ensable.Actual += 1  
             print("Line",actualNuevo.ensable.no,"posicion actual",actualNuevo.ensable.Actual)
+          elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) > actualNuevo.ensable.destino:
+            actualNuevo.ensable.Actual -= 1  
+            print("Line",actualNuevo.ensable.no,"posicion actual",actualNuevo.ensable.Actual)
 
-          elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) == actualNuevo.ensable.destino:
+          elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) == actualNuevo.ensable.destino :
             if  actualNuevo.ensable.Prioridad:
 
               if setPrimeaVezEnsablar:
@@ -100,23 +111,64 @@ class lista_brazos:
 
               if actualNuevo.ensable.Timeout > 0:
                 actualNuevo.ensable.Timeout -= 1
-                print("Line",actualNuevo.ensable.no, "Tiempo restante:",actualNuevo.ensable.Timeout )
+                if actualNuevo.ensable.Timeout == 0:
+                  
+                
+                  EstadoContinuar = False
+                  actualNuevo.ensable.noEnsamble =  PActual.elaboracion.NuevoCompoennete(int(actualNuevo.ensable.no))
+                  #print(actualNuevo.ensable.noEnsamble, " -----" ,actualNuevo.ensable.no)
+                  PActual.elaboracion.buscarVerificado(actualNuevo.ensable.noEnsamble)
+                  PActual.elaboracion.ActualizarAnteriores(actualNuevo.ensable.noEnsamble)
+            
+                  actualNuevo.ensable.destino =  PActual.elaboracion.NuevoDestino(int(actualNuevo.ensable.no))
+                  
+                  #Comprobar si hay alguno con destino----------------------------------------------------------------------------------
+                  actualUtlimo = self.primero
+                  while actualUtlimo != None:
+                      if actualUtlimo.ensable.destino != 0:
+                        EstadoContinuar = True
+                      
+                      #print("no: ", actualUtlimo.ensable.no,"destino: ", actualUtlimo.ensable.destino, " noEnsamble",actualUtlimo.ensable.noEnsamble )
+
+                      actualUtlimo = actualUtlimo.siguiente
+
+                  if EstadoContinuar == False:
+                    ElbaFinalizado == True
+                    print("FINALIZA")
+                    break
+                  
+
+                  #Fin comprobacion------------------------------------------------------------------------------------------------------
+                  
+                  self.NuevaPrioridad(PActual)
+                  actualNuevo.ensable.Prioridad = False
+                  print("Line",actualNuevo.ensable.no, "Tiempo Temrinado" )
+                  
+                  
+                else:
+                  print("Line",actualNuevo.ensable.no, "Ensamblando TR",actualNuevo.ensable.Timeout )
 
               elif actualNuevo.ensable.Timeout == 0:
-                print("Line",actualNuevo.ensable.no, "Tiempo Temrinado" )
-                actualNuevo.ensable.Prioridad = False
-                PActual.elaboracion.buscarVerificado(actualNuevo.ensable.noEnsamble)
-                PActual.elaboracion.ActualizarAnteriores(actualNuevo.ensable.noEnsamble)
-                #PActual.elaboracion.
+                setPrimeaVezEnsablar = True
+
+                print("Linea",actualNuevo.ensable.no, "Ensamblado a esperaA",actualNuevo.ensable.Actual )
               #print("Line",actualNuevo.ensable.no, "Ensamblado" )
               
             else:
-              print("Line",actualNuevo.ensable.no, "Ensamblado a espera")
+              print("Linea",actualNuevo.ensable.no, "Ensamblado a espera",actualNuevo.ensable.Actual )
           actualNuevo = actualNuevo.siguiente
         #fin recorrer=-----------------------
 
        
-        if CSegs == 4 or ElbaFinalizado== True:
+        """if CSegs == 10 or ElbaFinalizado== True:
+          #PActual.elaboracion.recorrer()
+          #self.recorrer()
+          ElboracionProgrsss = False
+          break"""
+
+        if  ElbaFinalizado== True:
+          #PActual.elaboracion.recorrer()
+          #self.recorrer()
           ElboracionProgrsss = False
           break
         
@@ -124,6 +176,15 @@ class lista_brazos:
         #ElbaFinalizado = True
     
     #print(c.Lproductos.primero.producto.nombre)
+
+  def AgregarDestino(self,PActual):
+     #Nueva prioridad-------------------------
+      actualNuevo= self.primero
+      while actualNuevo != None:
+        actualNuevo.ensable.destino =  PActual.elaboracion.buscarDestino(int(actualNuevo.ensable.no))
+        #print(actualNuevo.ensable.destino)
+        actualNuevo = actualNuevo.siguiente
+      #fin nueva prioridad=-----------------------
   
   def Inicializar(self,PActual):
     #Iniclizar primer ensamble-------------------------
@@ -132,18 +193,26 @@ class lista_brazos:
         if actualNuevo.ensable.no == int( PActual.elaboracion.InicizarlizarLinea()):
           actualNuevo.ensable.Prioridad =  True
           actualNuevo.ensable.noEnsamble =  int( PActual.elaboracion.InicizarlizarPosicionEn())
-          break
-      actualNuevo = actualNuevo.siguiente
+          
+        actualNuevo = actualNuevo.siguiente
       #fin inicializar=-----------------------
       
-  def AgregarDestino(self,PActual):
-     #Aggregando destino-------------------------
+  def NuevaPrioridad(self,PActual):
+     
+    #Aggregando destino-------------------------
       actualNuevo= self.primero
       while actualNuevo != None:
-        actualNuevo.ensable.destino =  PActual.elaboracion.buscarDestino(int(actualNuevo.ensable.no))
-        #print(actualNuevo.ensable.destino)
-        actualNuevo = actualNuevo.siguiente
-      #Terminando Destino=-----------------------
+        
+        if PActual.elaboracion.nuevaPrioridad() is not None:
+          if actualNuevo.ensable.no == int( PActual.elaboracion.nuevaPrioridad()):
+            actualNuevo.ensable.Prioridad =  True
+            
+            #actualNuevo.ensable.noEnsamble =  int( PActual.elaboracion.InicizarlizarPosicionEn())
+            #print(actualNuevo.ensable.no)
+            
+            break
+          actualNuevo = actualNuevo.siguiente
+    #Terminando Destino=-----------------------
 
 
 """if __name__ == "__main__":
