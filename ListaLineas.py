@@ -1,3 +1,4 @@
+import carga as c
 class linea:
   def __init__(self,no,componentes,tiempoE):
     self.no=no
@@ -7,6 +8,7 @@ class linea:
     self.Ensablar=False
     self.Prioridad= False
     self.Timeout= 0
+    self.destino = 0
 
 
 class nodo:
@@ -30,7 +32,8 @@ class lista_brazos:
   def recorrer(self):
     actual= self.primero
     while actual != None:
-      print("no: ", actual.ensable.no,"Compoenentes: ", actual.ensable.componentes, "Teimpo Ensable",actual.ensable.tiempoE )
+      #print("no: ", actual.ensable.no,"Compoenentes: ", actual.ensable.componentes, "Teimpo Ensable",actual.ensable.tiempoE )
+      print("destino: ", actual.ensable.destino )
       actual = actual.siguiente
 
   def eliminar(self,no):
@@ -59,6 +62,40 @@ class lista_brazos:
     if actual is not None:
       if actual.ensable.no == no:
         print("no: ", actual.ensable.no,"nombre: ")
+
+  def ElaborarManual(self,producto,valor):
+    ElboracionProgrsss = True
+    ElbaFinalizado = False
+    CSegs = 0
+
+    actual = self.primero
+    print(actual.ensable.no,"----", valor)
+  
+    PActual = c.Lproductos.buscar(producto)
+    if PActual is not None:
+      PActual.elaboracion.recorrer()
+      #Aggregando destino-------------------------
+      actualNuevo= self.primero
+      while actualNuevo != None:
+        actualNuevo.ensable.destino =  PActual.elaboracion.buscarDestino(int(actualNuevo.ensable.no))
+        print(actualNuevo.ensable.destino)
+        actualNuevo = actualNuevo.siguiente
+      #Terminando Destino=-----------------------
+
+      while ElboracionProgrsss == True :
+        CSegs += 1
+
+
+
+
+        if CSegs == 5 or ElbaFinalizado== True:
+          ElboracionProgrsss = False
+          break
+        #print("Hola",CSegs )
+        ElbaFinalizado = True
+    
+    #print(c.Lproductos.primero.producto.nombre)
+  
 
 
 """if __name__ == "__main__":

@@ -48,17 +48,21 @@ def cargarListas(xmlRuta):
                         name = nombre.text
                 for elaboracion in producto.iter('elaboracion'):
                         elab = elaboracion.text
-                        lista = purificacion(elab)
+                        lista = purificacion(elab,LineasDeclaradas)
                         if lista != None:
+                            agregar = True
                             #lista.recorrer()
                             pass
-                       
-                e1 = productos(name,lista)
-                Lproductos.insertar(e1)
+                        else:
+                            agregar = False
+                if agregar:    
+                    e1 = productos(name,lista)
+                    Lproductos.insertar(e1)
                         
         
         LLineas.recorrer()
         Lproductos.recorrer()
+        
         print("\nArchivo Cargado con Exito\n")
         return True
     
@@ -66,7 +70,7 @@ def cargarListas(xmlRuta):
         #print ("\nError en la ruta ingresada\n")
         #return False
 
-def purificacion(text):
+def purificacion(text,LineasDeclaradas):
     LEnsamble = lista_enzamblar()
     contador = 0
     componenete = 0
@@ -89,7 +93,12 @@ def purificacion(text):
         elif estado ==1:
             if isNumero(txt):
                 estado = 3
-                linea = int(txt)
+                if LineasDeclaradas>=int(txt):
+                    linea = int(txt)
+                    
+                else:
+                    agregar = False
+                    print("No existe la linea para enasmblar", txt)
             else:
                 if ord(txt) == 32: #
                     pass
@@ -131,7 +140,7 @@ def purificacion(text):
         elif estado ==6:
             if ord(txt) == 112: #p
                 estado = 0
-                e1 = ensamble(contador,componenete,linea,False)
+                e1 = ensamble(contador,linea,componenete,False)
                 LEnsamble.insertar(e1)
             else:
                 if ord(txt) == 32: #
@@ -175,10 +184,10 @@ def openExtra():
         print('\n"Lectura exitosa"')
         return archivo
 
-
+"""
 if __name__ == "__main__":
     #txt = "Archivo prueba.xml"
     txt = "Archivos de prueba/maquina.xml"
     cargarListas(txt)
     #cargarListas(openExtra())
-    
+    """
