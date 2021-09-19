@@ -14,6 +14,7 @@ if __name__ == "__main__":
         cargarListasSimulacino(txt)
     
         print("\n\nExito\n\n")
+        
         c.LLineas.reiniciar()
         c.LLineas.ElaborarManual("Guitarra")
         c.LLineas.ElaborarManual("Piano")
