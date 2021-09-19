@@ -28,6 +28,13 @@ class lista_productos:
       print("nombre: ", actual.producto.nombre,"elaboracion: ", actual.producto.elaboracion)
       actual = actual.siguiente
 
+  def clean(self):
+    actual= self.primero
+    while actual != None:
+      print("nombre: ", actual.producto.nombre,"elaboracion: ", actual.producto.elaboracion.Limpiar())
+      #print("nombre: ", actual.producto.nombre,"elaboracion: ", actual.producto.elaboracion)
+      actual = actual.siguiente
+
   def eliminar(self,nombre):
     actual = self.primero
     anterior = None

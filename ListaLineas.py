@@ -1,5 +1,5 @@
 from xml.etree.ElementTree import register_namespace
-import carga as c
+import cargaMaquina as c
 class linea:
   def __init__(self,no,componentes,tiempoE):
     self.no=no
@@ -136,8 +136,9 @@ class lista_brazos:
                     ElbaFinalizado == True
                     ElboracionProgrsss == False
                     num = CSegs
-                    print("FINALIZA")
                     self.reiniciar()
+                    print("FINALIZA")
+                   
                     break
                   
 
@@ -226,6 +227,8 @@ class lista_brazos:
       actual.ensable.destino = 0
       actual.ensable.noEnsamble = 0
       actual = actual.siguiente
+
+    c.Lproductos.clean()
 
    
 """if __name__ == "__main__":
