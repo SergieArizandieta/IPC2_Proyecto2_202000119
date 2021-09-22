@@ -31,7 +31,7 @@ class lista_productos:
   def clean(self):
     actual= self.primero
     while actual != None:
-      print("nombre: ", actual.producto.nombre,"elaboracion: ", actual.producto.elaboracion.Limpiar())
+      actual.producto.elaboracion.Limpiar()
       #print("nombre: ", actual.producto.nombre,"elaboracion: ", actual.producto.elaboracion)
       actual = actual.siguiente
 
@@ -64,7 +64,14 @@ class lista_productos:
         #print("Lista: ", actual.producto.elaboracion)
         #actual.producto.elaboracion.recorrer()
         return actual.producto
-
+        
+  def ListadoProductoss(self):
+    lista = []
+    actual= self.primero
+    while actual != None:
+      lista.append(actual.producto.nombre)
+      actual = actual.siguiente
+    return lista
 """
 if __name__ == "__main__":
     e1 = productos(1,1)

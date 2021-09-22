@@ -158,8 +158,6 @@ def purificacion(text,LineasDeclaradas):
         return LEnsamble
     else: 
         return None
-        
-
 
 def isNumero(txt):
     if ((ord(txt) >= 48 and ord(txt) <= 57)):
@@ -181,7 +179,8 @@ def openMaquina():
         print('\nNo se seleccionó ningun archivo')
         return None
     else:
-        print('\n"Lectura exitosa"')
+       
+        print(archivo)
         return archivo
 
 """

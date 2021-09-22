@@ -4,7 +4,8 @@ from tkinter import ttk
 from PIL import ImageTk, Image
 
 import main
-
+import cargaMaquina as cm
+import cargaSimulacion as s
 Nombre = ""
 
 imgOriginal= './IMG_Programa/auxiliar.png'
@@ -12,7 +13,7 @@ imgMirrorx= './IMG_Programa/auxiliar.png'
 imgMirrory= './IMG_Programa/auxiliar.png'
 imgMirrorDouble= './IMG_Programa/auxiliar.png'
 
-opcion = ['Holas']
+opcion = ["No data"]
 def ventanas():
     try:
         global imgOriginal
@@ -29,29 +30,31 @@ def ventanas():
         def cerrar():
             exit()
 
+        def CargaMaquina():
+            print("Carga Maquina")
+            cm.cargarListas(cm.openMaquina())
+            ProductosIndividuales['values'] = cm.Lproductos.ListadoProductoss()  
+            ReporteSecuencia['values'] = cm.Lproductos.ListadoProductoss()  
+
         def OperarIndividual():
-            print("Individual")
             global Nombre
-            Nombre = ImagenesCombo.get()
-            ComboText= ImagenesCombo.get()
-            ImagenesCombo['values'] = opcion
+            Nombre = ProductosIndividuales.get()
+            ComboText= ProductosIndividuales.get()
+            print("Individual - ",ComboText)
+
+            cm.LLineas.ElaborarManual(ComboText)
+            
 
         def OperarMasivo():
             print("Masivo")
-            global Nombre
-            Nombre = ImagenesCombo.get()
-            ComboText= ImagenesCombo.get()
-            ImagenesCombo['values'] = opcion
+            s.cargarListasSimulacino(s.openSimulacion())
             
-
         def sustituir():
             global Nombre
-            Nombre = ImagenesCombo.get()
-     
-            ComboText= ImagenesCombo.get()
+            Nombre = ProductosIndividuales.get()
+            ComboText= ProductosIndividuales.get()
 
-            ImagenesCombo['values'] = opcion
-            
+     
             #print(ComboText)
             #listado =  Op.lista_e.buscar(ImagenesCombo.get())
 
@@ -89,7 +92,7 @@ def ventanas():
         Button(pes1,text="Salir",command= cerrar).place(x=1400, y =0)
 
         Label(pes1,text="Cargar configuracion maquina:",fg="Gray",font=("Popins",12)).place(x=550, y =25)
-        Button(pes1,text="Carga Maquina",command= cerrar).place(x=675, y =70)
+        Button(pes1,text="Carga Maquina",command= CargaMaquina).place(x=675, y =70)
         
         Config = ImageTk.PhotoImage(Image.open('./IMG_Programa/config.jpg').resize((700, 300)))
         lblMaquina = Label(pes1)
@@ -117,11 +120,11 @@ def ventanas():
 
         Label(pes2,text = "------------------------------------------------------",fg="Gray",font=("Popins",12)).place(x=15, y= 275)
 
-        ImagenesCombo = ttk.Combobox(pes2, width = 27,state="readonly")
-        ImagenesCombo.place(x=30, y= 250)
+        ProductosIndividuales = ttk.Combobox(pes2, width = 27,state="readonly")
+        ProductosIndividuales.place(x=30, y= 250)
         #ImagenesCombo.pack( pady=200,)
-        ImagenesCombo.current()
-        ImagenesCombo['values'] = opcion
+        ProductosIndividuales.current()
+        ProductosIndividuales['values'] = opcion
     
        
 
@@ -143,11 +146,11 @@ def ventanas():
         TextBoxSeg = Text(pes3, height = 1, width = 10)
         TextBoxSeg.place(x=30, y= 240)
 
-        ImagenesCombo = ttk.Combobox(pes3, width = 27,state="readonly")
-        ImagenesCombo.place(x=30, y= 150)
+        ReporteSecuencia = ttk.Combobox(pes3, width = 27,state="readonly")
+        ReporteSecuencia.place(x=30, y= 150)
         #ImagenesCombo.pack( pady=200,)
-        ImagenesCombo.current()
-        ImagenesCombo['values'] = opcion
+        ReporteSecuencia.current()
+        ReporteSecuencia['values'] = opcion
        
 
         Label(pes3,text = "------------------------------------------------------",fg="Gray",font=("Popins",12)).place(x=15, y= 275)

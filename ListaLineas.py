@@ -69,6 +69,7 @@ class lista_brazos:
         print("no: ", actual.ensable.no,"nombre: ")
 
   def ElaborarManual(self,producto):
+    self.reiniciar()
     print("PRODUCTO", producto)
     num = 0
     EstadoContinuar = False
