@@ -129,7 +129,8 @@ class lista_brazos:
               if actualNuevo.ensable.Timeout > 0:
                 actualNuevo.ensable.Timeout -= 1
                 if actualNuevo.ensable.Timeout == 0:
-                  
+
+                 
                 
                   EstadoContinuar = False
                   actualNuevo.ensable.noEnsamble =  PActual.elaboracion.NuevoCompoennete(int(actualNuevo.ensable.no))
@@ -139,6 +140,9 @@ class lista_brazos:
             
                   actualNuevo.ensable.destino =  PActual.elaboracion.NuevoDestino(int(actualNuevo.ensable.no))
                   
+                  
+
+
                   #Comprobar si hay alguno con destino----------------------------------------------------------------------------------
                   actualUtlimo = self.primero
                   while actualUtlimo != None:
@@ -181,7 +185,7 @@ class lista_brazos:
                 setPrimeaVezEnsablar = True
 
                 print("Linea",actualNuevo.ensable.no, "Ensamblado a esperaA",actualNuevo.ensable.Actual )
-
+                
                 
 
                 
@@ -189,6 +193,7 @@ class lista_brazos:
               
             else:
               print("Linea",actualNuevo.ensable.no, "Ensamblado a espera",actualNuevo.ensable.Actual )
+
               Registro = r.register(CSegs, " No hacer nada " )
               actualNuevo.ensable.registro.insertar(Registro) 
           actualNuevo = actualNuevo.siguiente
