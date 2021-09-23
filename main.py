@@ -8,19 +8,19 @@ if __name__ == "__main__":
         
         
         
-        ventanas()
+        #ventanas()
         
        
-        """txt = "Archivos de prueba/maquina.xml"
+        txt = "Archivos de prueba/maquina.xml"
         cargarListas(txt)
 
       
 
-        txt = "Archivos de prueba/simulacion.xml"
-        cargarListasSimulacino(txt)
+        #txt = "Archivos de prueba/simulacion.xml"
+        #cargarListasSimulacino(txt)
 
         c.LLineas.ElaborarManual("Guitarra")
-        c.LLineas.ElaborarManual("Piano")"""
+        #c.LLineas.ElaborarManual("Piano")
     
         print("\n\nExito\n\n")
         

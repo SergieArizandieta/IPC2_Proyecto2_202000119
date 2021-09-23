@@ -1,7 +1,8 @@
 from xml.etree.ElementTree import register_namespace
 import cargaMaquina as c
+import RegistroLineas as r
 class linea:
-  def __init__(self,no,componentes,tiempoE):
+  def __init__(self,no,componentes,tiempoE,registro):
     self.no=no
     self.componentes=componentes
     self.tiempoE=tiempoE
@@ -11,10 +12,9 @@ class linea:
     self.destino = 0
     self.noEnsamble = 0
 
-   
+    self.registro = registro
 
-    self.Ensablar=False # -- No lo he usado
-
+    
 class nodo:
     def __init__(self,ensable =None,siguiente=None):
       self.ensable=ensable
@@ -37,8 +37,17 @@ class lista_brazos:
     actual= self.primero
     while actual != None:
       #print("no: ", actual.ensable.no,"Compoenentes: ", actual.ensable.componentes, "Teimpo Ensable",actual.ensable.tiempoE )
-      print("no: ", actual.ensable.no,"destino: ", actual.ensable.destino, " noEnsamble",actual.ensable.noEnsamble )
+      #print("no: ", actual.ensable.no,"destino: ", actual.ensable.destino, " noEnsamble",actual.ensable.noEnsamble )
+      print("no: ", actual.ensable.no," Registro: ", actual.ensable.registro )
       #print("destino: ", actual.ensable.destino )
+      actual = actual.siguiente
+    
+  def recorrerRegistro(self):
+    actual= self.primero
+    while actual != None:
+      print("no: ", actual.ensable.no," Registro: ", actual.ensable.registro )
+      actual.ensable.registro.recorrer()
+     
       actual = actual.siguiente
 
   def eliminar(self,no):
@@ -99,9 +108,16 @@ class lista_brazos:
           if actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) < actualNuevo.ensable.destino:
             actualNuevo.ensable.Actual += 1  
             print("Line",actualNuevo.ensable.no,"posicion actual",actualNuevo.ensable.Actual)
+
+            Registro = r.register(CSegs, " Mover brazo a " + str(actualNuevo.ensable.Actual))
+            actualNuevo.ensable.registro.insertar(Registro) 
+
           elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) > actualNuevo.ensable.destino:
             actualNuevo.ensable.Actual -= 1  
             print("Line",actualNuevo.ensable.no,"posicion actual",actualNuevo.ensable.Actual)
+
+            Registro = r.register(CSegs, " Mover brazo a " + str(actualNuevo.ensable.Actual))
+            actualNuevo.ensable.registro.insertar(Registro) 
 
           elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) == actualNuevo.ensable.destino :
             if  actualNuevo.ensable.Prioridad:
@@ -137,6 +153,7 @@ class lista_brazos:
                     ElbaFinalizado == True
                     ElboracionProgrsss == False
                     num = CSegs
+                    self.recorrerRegistro()
                     self.reiniciar()
                     print("FINALIZA")
                    
@@ -148,19 +165,32 @@ class lista_brazos:
                   self.NuevaPrioridad(PActual)
                   actualNuevo.ensable.Prioridad = False
                   print("Line",actualNuevo.ensable.no, "Tiempo Temrinado" )
+
+                  Registro = r.register(CSegs, " Ensamblando " )
+                  actualNuevo.ensable.registro.insertar(Registro) 
                   
                   
                 else:
                   print("Line",actualNuevo.ensable.no, "Ensamblando TR",actualNuevo.ensable.Timeout )
 
+
+                  Registro = r.register(CSegs, " Ensamblando " )
+                  actualNuevo.ensable.registro.insertar(Registro) 
+
               elif actualNuevo.ensable.Timeout == 0:
                 setPrimeaVezEnsablar = True
 
                 print("Linea",actualNuevo.ensable.no, "Ensamblado a esperaA",actualNuevo.ensable.Actual )
+
+                
+
+                
               #print("Line",actualNuevo.ensable.no, "Ensamblado" )
               
             else:
               print("Linea",actualNuevo.ensable.no, "Ensamblado a espera",actualNuevo.ensable.Actual )
+              Registro = r.register(CSegs, " No hacer nada " )
+              actualNuevo.ensable.registro.insertar(Registro) 
           actualNuevo = actualNuevo.siguiente
         #fin recorrer=-----------------------
 
@@ -222,6 +252,7 @@ class lista_brazos:
   def reiniciar(self):
     actual= self.primero
     while actual != None:
+     
       actual.ensable.Actual=0
       actual.ensable.Prioridad= False
       actual.ensable.Timeout= 0

@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 from ListaLineas import *
 from ListaProductos import *
 from ListaEnsable import*
-
+from RegistroLineas import *
 
 Lproductos = lista_productos()
 LLineas = lista_brazos()
@@ -38,7 +38,8 @@ def cargarListas(xmlRuta):
                             can = int(cantidad.text)
                     for timepo in LineasBrazos.iter('TiempoEnsamblaje'):
                             time = int(timepo.text)
-                    e1 = linea(num,can,time)
+                    NewLinea = lista_Registro()
+                    e1 = linea(num,can,time,NewLinea)
                     LLineas.insertar(e1)
                 else:
                     print("Se han ingesado mas lineas de las esperadas")
