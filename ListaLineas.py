@@ -1,7 +1,18 @@
+from tkinter.constants import NONE
 from xml.etree.ElementTree import register_namespace
+import xml.etree.cElementTree as ET
+
 import cargaMaquina as c
+import RegistroLineas as r
+import cargaSimulacion as s
+
+firsTime = True
+CantidadMasico = 0
+CantidadAux = 0
+rootM = None
+ListadoPorductosM =None
 class linea:
-  def __init__(self,no,componentes,tiempoE):
+  def __init__(self,no,componentes,tiempoE,registro):
     self.no=no
     self.componentes=componentes
     self.tiempoE=tiempoE
@@ -11,10 +22,8 @@ class linea:
     self.destino = 0
     self.noEnsamble = 0
 
-   
 
-    self.Ensablar=False # -- No lo he usado
-
+    self.registro = registro    
 class nodo:
     def __init__(self,ensable =None,siguiente=None):
       self.ensable=ensable
@@ -37,8 +46,17 @@ class lista_brazos:
     actual= self.primero
     while actual != None:
       #print("no: ", actual.ensable.no,"Compoenentes: ", actual.ensable.componentes, "Teimpo Ensable",actual.ensable.tiempoE )
-      print("no: ", actual.ensable.no,"destino: ", actual.ensable.destino, " noEnsamble",actual.ensable.noEnsamble )
+      print("no: ", actual.ensable.no,"destino: ", actual.ensable.destino, " Prioridad",actual.ensable.Prioridad )
+      #print("no: ", actual.ensable.no," Registro: ", actual.ensable.registro )
       #print("destino: ", actual.ensable.destino )
+      actual = actual.siguiente
+    
+  def recorrerRegistro(self):
+    actual= self.primero
+    while actual != None:
+      print("no: ", actual.ensable.no," Registro: ", actual.ensable.registro )
+      actual.ensable.registro.recorrer()
+     
       actual = actual.siguiente
 
   def eliminar(self,no):
@@ -68,17 +86,21 @@ class lista_brazos:
       if actual.ensable.no == no:
         print("no: ", actual.ensable.no,"nombre: ")
 
-  def ElaborarManual(self,producto):
+  def ElaborarManual(self,producto,tipo): 
+    self.reiniciar()
+    
     print("PRODUCTO", producto)
     num = 0
-    EstadoContinuar = False
-    setPrimeaVezEnsablar = True
     ElboracionProgrsss = True
     ElbaFinalizado = False
     CSegs = 0
 
-    actual = self.primero
-   
+    Ensablar = False
+    actualizar = False
+    tiempoAUX =0
+    actualizarTimepo = False
+    ubicacionaUX = None
+    EstadoContinuar = False
   
     PActual = c.Lproductos.buscar(producto)
     if PActual is not None:
@@ -86,87 +108,123 @@ class lista_brazos:
 
       self.Inicializar(PActual)
       self.AgregarDestino(PActual)
-
+      self.recorrer()
+      
       while ElboracionProgrsss == True :
         CSegs += 1
+        EstadoContinuar = False
+
+      
+        
         print("Segundo",CSegs )
+        #Comprobar si hay alguno con destino----------------------------------------------------------------------------------
+        actualUtlimo = self.primero
+        while actualUtlimo != None:
+            if actualUtlimo.ensable.destino != 0:
+              EstadoContinuar = True
+            actualUtlimo = actualUtlimo.siguiente
+
+        if EstadoContinuar == False and ElbaFinalizado == False:
+          ElbaFinalizado == True
+          
+          num = CSegs
+          
+          #self.recorrerRegistro()
+          self.Exportar(producto,tipo)
+          global firsTime
+          firsTime = False
+          self.reiniciar()
+          
+          
+          print("FINALIZA")
+          print("\n\n\n")
+          
+
+        if actualizarTimepo:
+          tiempoAUX  = CSegs
+
 
         #Recorrer los que tengan destino-------------------------
         actualNuevo= self.primero
-        while actualNuevo != None:
-
-          if actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) < actualNuevo.ensable.destino:
-            actualNuevo.ensable.Actual += 1  
-            print("Line",actualNuevo.ensable.no,"posicion actual",actualNuevo.ensable.Actual)
-          elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) > actualNuevo.ensable.destino:
-            actualNuevo.ensable.Actual -= 1  
-            print("Line",actualNuevo.ensable.no,"posicion actual",actualNuevo.ensable.Actual)
-
-          elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) == actualNuevo.ensable.destino :
-            if  actualNuevo.ensable.Prioridad:
-
-              if setPrimeaVezEnsablar:
-                actualNuevo.ensable.Timeout = actualNuevo.ensable.tiempoE
-                setPrimeaVezEnsablar = False
-
-              if actualNuevo.ensable.Timeout > 0:
-                actualNuevo.ensable.Timeout -= 1
-                if actualNuevo.ensable.Timeout == 0:
-                  
-                
-                  EstadoContinuar = False
-                  actualNuevo.ensable.noEnsamble =  PActual.elaboracion.NuevoCompoennete(int(actualNuevo.ensable.no))
-                  #print(actualNuevo.ensable.noEnsamble, " -----" ,actualNuevo.ensable.no)
-                  PActual.elaboracion.buscarVerificado(actualNuevo.ensable.noEnsamble)
-                  PActual.elaboracion.ActualizarAnteriores(actualNuevo.ensable.noEnsamble)
+        if EstadoContinuar:
+          while actualNuevo != None:
             
-                  actualNuevo.ensable.destino =  PActual.elaboracion.NuevoDestino(int(actualNuevo.ensable.no))
-                  
-                  #Comprobar si hay alguno con destino----------------------------------------------------------------------------------
-                  actualUtlimo = self.primero
-                  while actualUtlimo != None:
-                      if actualUtlimo.ensable.destino != 0:
-                        EstadoContinuar = True
-                      
-                      #print("no: ", actualUtlimo.ensable.no,"destino: ", actualUtlimo.ensable.destino, " noEnsamble",actualUtlimo.ensable.noEnsamble )
+            if actualizar  and  tiempoAUX == CSegs:
+              ubicacionaUX.ensable.noEnsamble =  PActual.elaboracion.NuevoCompoennete(int(ubicacionaUX.ensable.no))
+              PActual.elaboracion.buscarVerificado(ubicacionaUX.ensable.noEnsamble)
+              PActual.elaboracion.ActualizarAnteriores(ubicacionaUX.ensable.noEnsamble)
+              tiempoAUX = 0
+              actualizar = False
+              ubicacionaUX.ensable.destino =  PActual.elaboracion.NuevoDestino(int(ubicacionaUX.ensable.no))
 
-                      actualUtlimo = actualUtlimo.siguiente
-
-                  if EstadoContinuar == False:
-                    ElbaFinalizado == True
-                    ElboracionProgrsss == False
-                    num = CSegs
-                    self.reiniciar()
-                    print("FINALIZA")
-                   
-                    break
-                  
-
-                  #Fin comprobacion------------------------------------------------------------------------------------------------------
-                  
-                  self.NuevaPrioridad(PActual)
-                  actualNuevo.ensable.Prioridad = False
-                  print("Line",actualNuevo.ensable.no, "Tiempo Temrinado" )
-                  
-                  
-                else:
-                  print("Line",actualNuevo.ensable.no, "Ensamblando TR",actualNuevo.ensable.Timeout )
-
-              elif actualNuevo.ensable.Timeout == 0:
-                setPrimeaVezEnsablar = True
-
-                print("Linea",actualNuevo.ensable.no, "Ensamblado a esperaA",actualNuevo.ensable.Actual )
-              #print("Line",actualNuevo.ensable.no, "Ensamblado" )
+              ubicacionaUX.ensable.Prioridad = False
+              self.NuevaPrioridad(PActual)
               
-            else:
-              print("Linea",actualNuevo.ensable.no, "Ensamblado a espera",actualNuevo.ensable.Actual )
-          actualNuevo = actualNuevo.siguiente
-        #fin recorrer=-----------------------
+              #self.recorrer()
 
-       
-        if CSegs == num or ElbaFinalizado== True:
-          #PActual.elaboracion.recorrer()
-          #self.recorrer()
+            if actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) < actualNuevo.ensable.destino:
+              actualNuevo.ensable.Actual += 1  
+              print("Line",actualNuevo.ensable.no,"Mover brazo a",actualNuevo.ensable.Actual)
+
+              Registro = r.register(CSegs, " Mover brazo a Componente " + str(actualNuevo.ensable.Actual))
+              actualNuevo.ensable.registro.insertar(Registro) 
+              
+
+            elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) > actualNuevo.ensable.destino:
+              actualNuevo.ensable.Actual -= 1  
+              print("Line",actualNuevo.ensable.no,"Mover brazo a",actualNuevo.ensable.Actual)
+
+              Registro = r.register(CSegs, " Mover brazo a Componente " + str(actualNuevo.ensable.Actual))
+              actualNuevo.ensable.registro.insertar(Registro) 
+              
+
+            elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) == actualNuevo.ensable.destino :
+              if  actualNuevo.ensable.Prioridad:
+
+                if Ensablar == False:
+                  actualNuevo.ensable.Timeout = actualNuevo.ensable.tiempoE
+                  
+                  Ensablar = True
+
+                actualNuevo.ensable.Timeout -= 1
+
+                if  actualNuevo.ensable.Timeout == 0:
+                  print("Linea",actualNuevo.ensable.no, "EnsamblarF" )
+                  Ensablar = False
+                  actualizar = True
+                  actualizarTimepo = True
+                  ubicacionaUX = actualNuevo
+
+                  Registro = r.register(CSegs, " Ensamblar Componente " + str(actualNuevo.ensable.Actual))
+                  actualNuevo.ensable.registro.insertar(Registro) 
+                else:
+                  print("Linea",actualNuevo.ensable.no, "Ensamblar" )
+                  Registro = r.register(CSegs, " Ensamblar Componente " + str(actualNuevo.ensable.Actual))
+                  actualNuevo.ensable.registro.insertar(Registro) 
+              
+              else:
+                print("Linea",actualNuevo.ensable.no, "No hacer nada")
+                
+
+                Registro = r.register(CSegs, " No hacer nada " )
+                actualNuevo.ensable.registro.insertar(Registro) 
+            else:
+                
+                
+              
+              print("Linea",actualNuevo.ensable.no, "No hacer nada")
+              Registro = r.register(CSegs, " No hacer nada " )
+              actualNuevo.ensable.registro.insertar(Registro) 
+
+              #Fin comprobacion------------------------------------------------------------------------------------------------------
+            
+            actualNuevo = actualNuevo.siguiente
+          #fin recorrer=-----------------------
+
+    
+        
+
+        if CSegs == num: 
           ElboracionProgrsss = False
           break
 
@@ -196,7 +254,7 @@ class lista_brazos:
       while actualNuevo != None:
         if actualNuevo.ensable.no == int( PActual.elaboracion.InicizarlizarLinea()):
           actualNuevo.ensable.Prioridad =  True
-          actualNuevo.ensable.noEnsamble =  int( PActual.elaboracion.InicizarlizarPosicionEn())
+          #actualNuevo.ensable.noEnsamble =  int( PActual.elaboracion.InicizarlizarPosicionEn())
           
         actualNuevo = actualNuevo.siguiente
       #fin inicializar=-----------------------
@@ -221,6 +279,7 @@ class lista_brazos:
   def reiniciar(self):
     actual= self.primero
     while actual != None:
+     
       actual.ensable.Actual=0
       actual.ensable.Prioridad= False
       actual.ensable.Timeout= 0
@@ -230,7 +289,199 @@ class lista_brazos:
 
     c.Lproductos.clean()
 
+  def LineasTotales(self):
+    aux =0 
+
+    actual= self.primero
+    while actual != None:
+      aux +=1
+      actual = actual.siguiente
+    return aux
+      
+  def reporte(self):
+    
+    
+    delete= True
+    actualNew= self.primero
+    while actualNew != None:
+      if actualNew.ensable.registro.Repetido() != " No hacer nada ":
+        delete = False
+      actualNew = actualNew.siguiente
+
+    if delete:
+      actualNew= self.primero
+      while actualNew != None:
+        actualNew.ensable.registro.eliminarRepetido() 
+        actualNew = actualNew.siguiente
+
+    Reporte = ""
+    LineasTot = self.LineasTotales()
    
+
+    Reporte = ' <table class="steelBlueCols"><thead><tr>  <th>Segundo</th>'
+
+    for x in range(0+1,LineasTot+1):
+      Reporte += '   <th>Linea ' + str(x) + '</th> '
+    Reporte += ' </tr></thead></tbody> '
+    Reporte +="\n" 
+    SegundosTot = self.primero.ensable.registro.SegundosTotales()
+    for x in range(0+1,SegundosTot+1):
+      Reporte +="<tr> "
+      Reporte += "<td>" + str(x) + "</td>"
+
+      actual= self.primero
+      while actual != None:
+        Reporte += "<td>" + str(actual.ensable.registro.buscarAccion(x)) + "</td>"
+        actual = actual.siguiente
+      Reporte +="</tr> "
+      Reporte +="\n"
+    
+    Reporte += "</tbody></table><br>" 
+    return Reporte
+
+  def Exportar(self,producto,tipo):
+    #print("EXPORTTTTTJDSSSSSSSSSSSSSSSSSSS")
+    self.exportarxmls(producto,tipo)
+    Reporte = self.reporte()
+
+    ReporteFinal = htmlInicial + Reporte + htmlFinal
+    if tipo == "MASIVO":
+      FileHTML=open("./HTML_Generado/" + producto + "_Masivo.HTML","w") 
+      FileHTML.write(ReporteFinal) 
+
+    elif tipo== "INDIVIDUAL":
+      FileHTML=open("./HTML_Generado/" + producto + "_Individual.HTML","w") 
+      FileHTML.write(ReporteFinal) 
+
+  def exportarxmls(self,producto,tipo):
+    
+  
+        
+
+        if tipo == "MASIVO":
+          global firsTime
+          global CantidadMasico
+          global CantidadAux
+          global ListadoPorductosM
+          global rootM
+
+          CantidadAux +=1
+          if firsTime:
+            CantidadMasico = s.LsitadoSimulacio.cantidad()
+            rootM = ET.Element("SalidaSimunlacion")
+            ET.SubElement(rootM, "Nombre").text = "MASIVO"
+            firsTime = False
+
+            ListadoPorductosM = ET.SubElement(rootM, "ListadoProductos")
+
+          Priducto = ET.SubElement(ListadoPorductosM, "Producto")
+            
+          SegundosTot = self.primero.ensable.registro.SegundosTotales()
+
+          ET.SubElement(Priducto, "Nombre").text = str(producto)
+          ET.SubElement(Priducto, "TimepoTotal").text = str(SegundosTot)
+          ElaboracionOptima = ET.SubElement(Priducto, "ElaboracionOptima")
+
+          for x in range(0+1,SegundosTot+1):
+            Tiempo = ET.SubElement(ElaboracionOptima, "Tiempo", NoSegundo=str(x))
+          
+            actual= self.primero
+            while actual != None:
+            
+              ET.SubElement(Tiempo, "LineaEnsamblaje", NoLinea= str(actual.ensable.no)).text = str(actual.ensable.registro.buscarAccion(x))
+              actual = actual.siguiente
+
+          if CantidadMasico == CantidadAux:
+            def Bonito(elemento, identificador='  '):
+                validar = [(0, elemento)]  
+
+                while validar:
+                    level, elemento = validar.pop(0)
+                    children = [(level + 1, child) for child in list(elemento)]
+                    if children:
+                        elemento.text = '\n' + identificador * (level+1)  
+                    if validar:
+                        elemento.tail = '\n' + identificador * validar[0][0]  
+                    else:
+                        elemento.tail = '\n' + identificador * (level-1)  
+                    validar[0:0] = children 
+
+            Bonito(rootM)
+            
+            archio = ET.ElementTree(rootM) 
+            archio.write("./XML_Generado/"  + "MASIVO" + '.xml', encoding='UTF-8')
+
+        if tipo == "INDIVIDUAL":
+          root = ET.Element("SalidaSimunlacion")
+          ET.SubElement(root, "Nombre").text = (str(producto)+"_"+ str(tipo))
+
+          ListadoPorductos = ET.SubElement(root, "ListadoProductos")
+          Priducto = ET.SubElement(ListadoPorductos, "Producto")
+          
+          SegundosTot = self.primero.ensable.registro.SegundosTotales()
+
+          ET.SubElement(Priducto, "Nombre").text = str(producto)
+          ET.SubElement(Priducto, "TimepoTotal").text = str(SegundosTot)
+          ElaboracionOptima = ET.SubElement(Priducto, "ElaboracionOptima")
+
+          for x in range(0+1,SegundosTot+1):
+            Tiempo = ET.SubElement(ElaboracionOptima, "Tiempo", NoSegundo=str(x))
+          
+            actual= self.primero
+            while actual != None:
+            
+              ET.SubElement(Tiempo, "LineaEnsamblaje", NoLinea= str(actual.ensable.no)).text = str(actual.ensable.registro.buscarAccion(x))
+              actual = actual.siguiente
+
+          def Bonito(elemento, identificador='  '):
+              validar = [(0, elemento)]  
+
+              while validar:
+                  level, elemento = validar.pop(0)
+                  children = [(level + 1, child) for child in list(elemento)]
+                  if children:
+                      elemento.text = '\n' + identificador * (level+1)  
+                  if validar:
+                      elemento.tail = '\n' + identificador * validar[0][0]  
+                  else:
+                      elemento.tail = '\n' + identificador * (level-1)  
+                  validar[0:0] = children 
+
+          Bonito(root)
+          
+          archio = ET.ElementTree(root) 
+          archio.write("./XML_Generado/"  + str(producto)+"_"+ str(tipo) + '.xml', encoding='UTF-8')
+        
+
+    
+
+   
+
+
+
+htmlInicial = """<!DOCTYPE html>
+<html>
+
+<!--Encabezado-->
+<head>
+<meta charset="UTF-8">
+<meta name="name" content="Reporte">
+<meta name="description" content="name">
+<meta name="keywods" content="python,dos,tres">
+<meta name="robots" content="Index, Follow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="css/styles.css"/>
+<title>Reporte</title>
+</head>
+<!----Curerpo--->
+<body>
+   <center><h6 class=\"titulos\" ><b> Reportes </b></h6>"""
+
+htmlFinal = """<br><footer style="background-color:white;">Creado por: Sergie Daniel Arizandieta Yol - 202000119</footer>
+</center></body>
+</html>"""
+
+
 """if __name__ == "__main__":
     e1 = linea(1,1,1)
     e2 = linea(2,2,2)

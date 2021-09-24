@@ -31,10 +31,18 @@ class Listado_SimulacionP:
       print("nombre simulaciom: ", actual.producto.nombre,"Producto: ", actual.producto.Producto)
       actual = actual.siguiente
 
+  def cantidad(self):
+    cantidad = 0
+    actual= self.primero
+    while actual != None:
+      cantidad+=1
+      actual = actual.siguiente
+    return cantidad
+
   def Simular(self):
         actual= self.primero
         while actual != None:
-            c.LLineas.ElaborarManual(actual.producto.Producto)
+            c.LLineas.ElaborarManual(actual.producto.Producto,"MASIVO")
             #print("Producto: ", actual.producto.Producto)
             actual = actual.siguiente
 
