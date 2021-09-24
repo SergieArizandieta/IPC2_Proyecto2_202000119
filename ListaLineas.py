@@ -2,6 +2,7 @@ from tkinter.constants import NONE
 from xml.etree.ElementTree import register_namespace
 import cargaMaquina as c
 import RegistroLineas as r
+import xml.etree.cElementTree as ET
 class linea:
   def __init__(self,no,componentes,tiempoE,registro):
     self.no=no
@@ -122,7 +123,7 @@ class lista_brazos:
           
           num = CSegs
           
-          self.recorrerRegistro()
+          #self.recorrerRegistro()
           self.Exportar(producto)
           
           self.reiniciar()
@@ -290,8 +291,9 @@ class lista_brazos:
       actual = actual.siguiente
     return aux
       
-
   def reporte(self):
+    
+    
     delete= True
     actualNew= self.primero
     while actualNew != None:
@@ -304,18 +306,13 @@ class lista_brazos:
       while actualNew != None:
         actualNew.ensable.registro.eliminarRepetido() 
         actualNew = actualNew.siguiente
-      
-      print("Eliminar Repetidos")
-    else:
-       print("NoEliminar Repetidos")
-
-    self.recorrerRegistro()
 
     Reporte = ""
     LineasTot = self.LineasTotales()
-    #print(LineadTot)
+   
 
     Reporte = ' <table class="steelBlueCols"><thead><tr>  <th>Segundo</th>'
+
     for x in range(0+1,LineasTot+1):
       Reporte += '   <th>Linea ' + str(x) + '</th> '
     Reporte += ' </tr></thead></tbody> '
@@ -336,14 +333,63 @@ class lista_brazos:
     return Reporte
 
   def Exportar(self,producto):
+    #print("EXPORTTTTTJDSSSSSSSSSSSSSSSSSSS")
+    self.exportarxmls(producto)
     Reporte = self.reporte()
 
     ReporteFinal = htmlInicial + Reporte + htmlFinal
     FileHTML=open("./HTML_Generado/" + producto + ".HTML","w") 
     FileHTML.write(ReporteFinal) 
 
-      
-     
+  def exportarxmls(self,producto):
+    try:
+        root = ET.Element("SalidaSimunlacion")
+        Nombre = ET.SubElement(root, "Nombre").text = "Nombre TItulo"
+
+        ListadoPorductos = ET.SubElement(root, "ListadoProductos")
+        Priducto = ET.SubElement(ListadoPorductos, "Producto")
+
+        LineasTot = self.LineasTotales()
+        
+        SegundosTot = self.primero.ensable.registro.SegundosTotales()
+
+        ET.SubElement(Priducto, "Nombre").text = str(producto)
+        ET.SubElement(Priducto, "TimepoTotal").text = str(SegundosTot)
+        ElaboracionOptima = ET.SubElement(Priducto, "ElaboracionOptima")
+
+        for x in range(0+1,SegundosTot+1):
+          Tiempo = ET.SubElement(ElaboracionOptima, "Tiempo", NoSegundo=str(x))
+         
+          actual= self.primero
+          while actual != None:
+           
+            ET.SubElement(Tiempo, "LineaEnsamblaje", NoLinea= str(actual.ensable.no)).text = str(actual.ensable.registro.buscarAccion(x))
+            actual = actual.siguiente
+
+        def Bonito(elemento, identificador='  '):
+            validar = [(0, elemento)]  
+
+            while validar:
+                level, elemento = validar.pop(0)
+                children = [(level + 1, child) for child in list(elemento)]
+                if children:
+                    elemento.text = '\n' + identificador * (level+1)  
+                if validar:
+                    elemento.tail = '\n' + identificador * validar[0][0]  
+                else:
+                    elemento.tail = '\n' + identificador * (level-1)  
+                validar[0:0] = children 
+
+        Bonito(root)
+        
+        archio = ET.ElementTree(root) 
+        archio.write("./XML_Generado/"  + producto + '.xml', encoding='UTF-8')
+        
+
+    except Exception:
+        print ("\nError al crear archivo")
+
+
    
 
 

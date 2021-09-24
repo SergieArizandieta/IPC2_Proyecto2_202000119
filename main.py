@@ -4,7 +4,7 @@ import cargaMaquina as c
 
 from Grafica import *
 if __name__ == "__main__":
-    #try:
+    try:
         
         
         
@@ -15,22 +15,22 @@ if __name__ == "__main__":
         txt = "Archivos de prueba/maquina.xml"
         cargarListas(txt)
 
-        c.LLineas.reporte()
+        #c.LLineas.reporte()
 
         
         #txt = "Archivos de prueba/simulacion.xml"
         #cargarListasSimulacino(txt)
 
 
-        c.LLineas.ElaborarManual("Guitarra")
-        #c.LLineas.ElaborarManual("Piano")
+        #c.LLineas.ElaborarManual("Guitarra")
+        c.LLineas.ElaborarManual("Piano")
     
         print("\n\nExito\n\n")
         
         #c.LLineas.reiniciar()
        
-    #except Exception:
-    #    print(Exception)
+    except Exception:
+       print(Exception)
         
     
     

@@ -1,0 +1,67 @@
+<SalidaSimunlacion>
+  <Nombre>Nombre TItulo</Nombre>
+  <ListadoProductos>
+    <Producto>
+      <Nombre>Piano</Nombre>
+      <TimepoTotal>14</TimepoTotal>
+      <ElaboracionOptima>
+        <Tiempo NoSegundo="1">
+          <LineaEnsamblaje NoLinea="1"> Mover brazo a Componente 1</LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Mover brazo a Componente 1</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="2">
+          <LineaEnsamblaje NoLinea="1"> Mover brazo a Componente 2</LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Mover brazo a Componente 2</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="3">
+          <LineaEnsamblaje NoLinea="1"> No hacer nada </LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Mover brazo a Componente 3</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="4">
+          <LineaEnsamblaje NoLinea="1"> No hacer nada </LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Ensamblar Componente 3</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="5">
+          <LineaEnsamblaje NoLinea="1"> No hacer nada </LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Ensamblar Componente 3</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="6">
+          <LineaEnsamblaje NoLinea="1"> No hacer nada </LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Ensamblar Componente 3</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="7">
+          <LineaEnsamblaje NoLinea="1"> No hacer nada </LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Ensamblar Componente 3</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="8">
+          <LineaEnsamblaje NoLinea="1"> Ensamblar Componente 2</LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Mover brazo a Componente 2</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="9">
+          <LineaEnsamblaje NoLinea="1"> Ensamblar Componente 2</LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Mover brazo a Componente 1</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="10">
+          <LineaEnsamblaje NoLinea="1"> No hacer nada </LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Ensamblar Componente 1</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="11">
+          <LineaEnsamblaje NoLinea="1"> No hacer nada </LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Ensamblar Componente 1</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="12">
+          <LineaEnsamblaje NoLinea="1"> No hacer nada </LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Ensamblar Componente 1</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="13">
+          <LineaEnsamblaje NoLinea="1"> No hacer nada </LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> Ensamblar Componente 1</LineaEnsamblaje>
+        </Tiempo>
+        <Tiempo NoSegundo="14">
+          <LineaEnsamblaje NoLinea="1"> No hacer nada </LineaEnsamblaje>
+          <LineaEnsamblaje NoLinea="2"> No hacer nada </LineaEnsamblaje>
+        </Tiempo>
+      </ElaboracionOptima>
+    </Producto>
+  </ListadoProductos>
+</SalidaSimunlacion>
