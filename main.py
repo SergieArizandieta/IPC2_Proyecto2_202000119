@@ -11,16 +11,19 @@ if __name__ == "__main__":
         #ventanas()
         
        
+        
         txt = "Archivos de prueba/maquina.xml"
         cargarListas(txt)
 
-      
+        c.LLineas.reporte()
 
+        
         #txt = "Archivos de prueba/simulacion.xml"
         #cargarListasSimulacino(txt)
 
+
         c.LLineas.ElaborarManual("Guitarra")
-        c.LLineas.ElaborarManual("Piano")
+        #c.LLineas.ElaborarManual("Piano")
     
         print("\n\nExito\n\n")
         

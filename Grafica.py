@@ -6,6 +6,7 @@ from PIL import ImageTk, Image
 import main
 import cargaMaquina as cm
 import cargaSimulacion as s
+
 Nombre = ""
 
 imgOriginal= './IMG_Programa/auxiliar.png'
@@ -43,6 +44,11 @@ def ventanas():
             print("Individual - ",ComboText)
 
             cm.LLineas.ElaborarManual(ComboText)
+            
+        def ReporteSecuencia():
+            print("Reporte")
+            cm.LLineas.reporte()
+            
             
 
         def OperarMasivo():
@@ -141,7 +147,7 @@ def ventanas():
         Label(pes3,text = "Seleccione prodcuto",fg="Gray",font=("Popins",12)).place(x=30, y= 120)
 
         Label(pes3,text = "Ingrese el segundo que desea generrar el reporte",fg="Gray",font=("Popins",12)).place(x=30, y= 200)
-        Button(pes3,text="Producir",command= OperarIndividual).place(x=230, y= 300)
+        Button(pes3,text="Producir",command= ReporteSecuencia).place(x=230, y= 300)
 
         TextBoxSeg = Text(pes3, height = 1, width = 10)
         TextBoxSeg.place(x=30, y= 240)

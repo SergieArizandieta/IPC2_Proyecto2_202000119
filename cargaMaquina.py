@@ -13,6 +13,7 @@ Lproductos = lista_productos()
 LLineas = lista_brazos()
 
 
+
 def cargarListas(xmlRuta):
     
     try:
@@ -26,6 +27,7 @@ def cargarListas(xmlRuta):
 
             for LineasBrazos in maquina.iter('CantidadLineasProduccion'):
                 LineasDeclaradas = int(LineasBrazos.text)
+                
                 
               
 

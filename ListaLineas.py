@@ -79,7 +79,7 @@ class lista_brazos:
       if actual.ensable.no == no:
         print("no: ", actual.ensable.no,"nombre: ")
 
-  def ElaborarManual(self,producto):
+  def ElaborarManual(self,producto): 
     self.reiniciar()
     
     print("PRODUCTO", producto)
@@ -121,9 +121,16 @@ class lista_brazos:
           ElbaFinalizado == True
           
           num = CSegs
+          
           self.recorrerRegistro()
-          #self.reiniciar()
+          self.Exportar(producto)
+          
+          self.reiniciar()
+          
+          
           print("FINALIZA")
+          print("\n\n\n")
+          
 
         if actualizarTimepo:
           tiempoAUX  = CSegs
@@ -151,7 +158,7 @@ class lista_brazos:
               actualNuevo.ensable.Actual += 1  
               print("Line",actualNuevo.ensable.no,"Mover brazo a",actualNuevo.ensable.Actual)
 
-              Registro = r.register(CSegs, " Mover brazo a " + str(actualNuevo.ensable.Actual))
+              Registro = r.register(CSegs, " Mover brazo a Componente " + str(actualNuevo.ensable.Actual))
               actualNuevo.ensable.registro.insertar(Registro) 
               
 
@@ -159,7 +166,7 @@ class lista_brazos:
               actualNuevo.ensable.Actual -= 1  
               print("Line",actualNuevo.ensable.no,"Mover brazo a",actualNuevo.ensable.Actual)
 
-              Registro = r.register(CSegs, " Mover brazo a " + str(actualNuevo.ensable.Actual))
+              Registro = r.register(CSegs, " Mover brazo a Componente " + str(actualNuevo.ensable.Actual))
               actualNuevo.ensable.registro.insertar(Registro) 
               
 
@@ -180,11 +187,11 @@ class lista_brazos:
                   actualizarTimepo = True
                   ubicacionaUX = actualNuevo
 
-                  Registro = r.register(CSegs, " Ensamblar " + str(actualNuevo.ensable.Actual))
+                  Registro = r.register(CSegs, " Ensamblar Componente " + str(actualNuevo.ensable.Actual))
                   actualNuevo.ensable.registro.insertar(Registro) 
                 else:
                   print("Linea",actualNuevo.ensable.no, "Ensamblar" )
-                  Registro = r.register(CSegs, " Ensamblar " + str(actualNuevo.ensable.Actual))
+                  Registro = r.register(CSegs, " Ensamblar Componente " + str(actualNuevo.ensable.Actual))
                   actualNuevo.ensable.registro.insertar(Registro) 
               
               else:
@@ -274,7 +281,96 @@ class lista_brazos:
 
     c.Lproductos.clean()
 
+  def LineasTotales(self):
+    aux =0 
+
+    actual= self.primero
+    while actual != None:
+      aux +=1
+      actual = actual.siguiente
+    return aux
+      
+
+  def reporte(self):
+    delete= True
+    actualNew= self.primero
+    while actualNew != None:
+      if actualNew.ensable.registro.Repetido() != " No hacer nada ":
+        delete = False
+      actualNew = actualNew.siguiente
+
+    if delete:
+      actualNew= self.primero
+      while actualNew != None:
+        actualNew.ensable.registro.eliminarRepetido() 
+        actualNew = actualNew.siguiente
+      
+      print("Eliminar Repetidos")
+    else:
+       print("NoEliminar Repetidos")
+
+    self.recorrerRegistro()
+
+    Reporte = ""
+    LineasTot = self.LineasTotales()
+    #print(LineadTot)
+
+    Reporte = ' <table class="steelBlueCols"><thead><tr>  <th>Segundo</th>'
+    for x in range(0+1,LineasTot+1):
+      Reporte += '   <th>Linea ' + str(x) + '</th> '
+    Reporte += ' </tr></thead></tbody> '
+    Reporte +="\n" 
+    SegundosTot = self.primero.ensable.registro.SegundosTotales()
+    for x in range(0+1,SegundosTot+1):
+      Reporte +="<tr> "
+      Reporte += "<td>" + str(x) + "</td>"
+
+      actual= self.primero
+      while actual != None:
+        Reporte += "<td>" + str(actual.ensable.registro.buscarAccion(x)) + "</td>"
+        actual = actual.siguiente
+      Reporte +="</tr> "
+      Reporte +="\n"
+    
+    Reporte += "</tbody></table><br>" 
+    return Reporte
+
+  def Exportar(self,producto):
+    Reporte = self.reporte()
+
+    ReporteFinal = htmlInicial + Reporte + htmlFinal
+    FileHTML=open("./HTML_Generado/" + producto + ".HTML","w") 
+    FileHTML.write(ReporteFinal) 
+
+      
+     
    
+
+
+
+htmlInicial = """<!DOCTYPE html>
+<html>
+
+<!--Encabezado-->
+<head>
+<meta charset="UTF-8">
+<meta name="name" content="Reporte">
+<meta name="description" content="name">
+<meta name="keywods" content="python,dos,tres">
+<meta name="robots" content="Index, Follow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="css/styles.css"/>
+<title>Reporte</title>
+</head>
+<!----Curerpo--->
+<body>
+   <center><h6 class=\"titulos\" ><b> Reportes </b></h6>"""
+
+htmlFinal = """<br><footer style="background-color:white;">Creado por: Sergie Daniel Arizandieta Yol - 202000119</footer>
+</center></body>
+</html>"""
+
+
 """if __name__ == "__main__":
     e1 = linea(1,1,1)
     e2 = linea(2,2,2)
