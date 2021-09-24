@@ -43,7 +43,7 @@ def ventanas():
             ComboText= ProductosIndividuales.get()
             print("Individual - ",ComboText)
 
-            cm.LLineas.ElaborarManual(ComboText)
+            cm.LLineas.ElaborarManual(ComboText,"INDIVIDUAL")
             
         def ReporteSecuencia():
             print("Reporte")
