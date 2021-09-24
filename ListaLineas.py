@@ -354,10 +354,8 @@ class lista_brazos:
       FileHTML.write(ReporteFinal) 
 
   def exportarxmls(self,producto,tipo):
-    
-  
-        
 
+    try:
         if tipo == "MASIVO":
           global firsTime
           global CantidadMasico
@@ -452,13 +450,9 @@ class lista_brazos:
           archio = ET.ElementTree(root) 
           archio.write("./XML_Generado/"  + str(producto)+"_"+ str(tipo) + '.xml', encoding='UTF-8')
         
-
+    except Exception:
+        print("Error al genrar XML")
     
-
-   
-
-
-
 htmlInicial = """<!DOCTYPE html>
 <html>
 

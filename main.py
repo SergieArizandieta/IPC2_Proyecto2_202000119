@@ -4,21 +4,22 @@ import cargaMaquina as c
 
 from Grafica import *
 if __name__ == "__main__":
-
+    try:
         
         
-        #ventanas()
+        
+        ventanas()
         
        
         
-        txt = "Archivos de prueba/maquina.xml"
-        cargarListas(txt)
+        #txt = "Archivos de prueba/maquina.xml"
+        #cargarListas(txt)
 
         #c.LLineas.reporte()
 
         
-        txt = "Archivos de prueba/simulacion.xml"
-        cargarListasSimulacino(txt)
+        #txt = "Archivos de prueba/simulacion.xml"
+        #cargarListasSimulacino(txt)
 
 
         #c.LLineas.ElaborarManual("Guitarra","INDIVIDUAL")
@@ -28,6 +29,8 @@ if __name__ == "__main__":
         
         #c.LLineas.reiniciar()
        
-
+    except Exception:
+       print(Exception)
+        
     
     
