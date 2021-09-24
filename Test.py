@@ -1,4 +1,3 @@
-from tkinter.constants import NONE
 from xml.etree.ElementTree import register_namespace
 import cargaMaquina as c
 import RegistroLineas as r
@@ -12,7 +11,6 @@ class linea:
     self.Timeout= 0
     self.destino = 0
     self.noEnsamble = 0
-
 
     self.registro = registro
 
@@ -39,8 +37,8 @@ class lista_brazos:
     actual= self.primero
     while actual != None:
       #print("no: ", actual.ensable.no,"Compoenentes: ", actual.ensable.componentes, "Teimpo Ensable",actual.ensable.tiempoE )
-      print("no: ", actual.ensable.no,"destino: ", actual.ensable.destino, " Prioridad",actual.ensable.Prioridad )
-      #print("no: ", actual.ensable.no," Registro: ", actual.ensable.registro )
+      #print("no: ", actual.ensable.no,"destino: ", actual.ensable.destino, " noEnsamble",actual.ensable.noEnsamble )
+      print("no: ", actual.ensable.no," Registro: ", actual.ensable.registro )
       #print("destino: ", actual.ensable.destino )
       actual = actual.siguiente
     
@@ -81,19 +79,16 @@ class lista_brazos:
 
   def ElaborarManual(self,producto):
     self.reiniciar()
-    
     print("PRODUCTO", producto)
     num = 0
+    EstadoContinuar = False
+    setPrimeaVezEnsablar = True
     ElboracionProgrsss = True
     ElbaFinalizado = False
     CSegs = 0
 
-    Ensablar = False
-    actualizar = False
-    tiempoAUX =0
-    actualizarTimepo = False
-    ubicacionaUX = None
-    EstadoContinuar = False
+    actual = self.primero
+   
   
     PActual = c.Lproductos.buscar(producto)
     if PActual is not None:
@@ -101,115 +96,113 @@ class lista_brazos:
 
       self.Inicializar(PActual)
       self.AgregarDestino(PActual)
-      self.recorrer()
-      
+
       while ElboracionProgrsss == True :
         CSegs += 1
-        EstadoContinuar = False
-
-      
-        
         print("Segundo",CSegs )
-        #Comprobar si hay alguno con destino----------------------------------------------------------------------------------
-        actualUtlimo = self.primero
-        while actualUtlimo != None:
-            if actualUtlimo.ensable.destino != 0:
-              EstadoContinuar = True
-            actualUtlimo = actualUtlimo.siguiente
-
-        if EstadoContinuar == False and ElbaFinalizado == False:
-          ElbaFinalizado == True
-          
-          num = CSegs
-          self.recorrerRegistro()
-          #self.reiniciar()
-          print("FINALIZA")
-
-        if actualizarTimepo:
-          tiempoAUX  = CSegs
-
 
         #Recorrer los que tengan destino-------------------------
         actualNuevo= self.primero
-        if EstadoContinuar:
-          while actualNuevo != None:
-            
-            if actualizar  and  tiempoAUX == CSegs:
-              ubicacionaUX.ensable.noEnsamble =  PActual.elaboracion.NuevoCompoennete(int(ubicacionaUX.ensable.no))
-              PActual.elaboracion.buscarVerificado(ubicacionaUX.ensable.noEnsamble)
-              PActual.elaboracion.ActualizarAnteriores(ubicacionaUX.ensable.noEnsamble)
-              tiempoAUX = 0
-              actualizar = False
-              ubicacionaUX.ensable.destino =  PActual.elaboracion.NuevoDestino(int(ubicacionaUX.ensable.no))
+        while actualNuevo != None:
 
-              ubicacionaUX.ensable.Prioridad = False
-              self.NuevaPrioridad(PActual)
-              
-              #self.recorrer()
+          if actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) < actualNuevo.ensable.destino:
+            actualNuevo.ensable.Actual += 1  
+            print("Line",actualNuevo.ensable.no,"posicion actual",actualNuevo.ensable.Actual)
 
-            if actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) < actualNuevo.ensable.destino:
-              actualNuevo.ensable.Actual += 1  
-              print("Line",actualNuevo.ensable.no,"Mover brazo a",actualNuevo.ensable.Actual)
+            Registro = r.register(CSegs, " Mover brazo a " + str(actualNuevo.ensable.Actual))
+            actualNuevo.ensable.registro.insertar(Registro) 
 
-              Registro = r.register(CSegs, " Mover brazo a " + str(actualNuevo.ensable.Actual))
-              actualNuevo.ensable.registro.insertar(Registro) 
-              
+          elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) > actualNuevo.ensable.destino:
+            actualNuevo.ensable.Actual -= 1  
+            print("Line",actualNuevo.ensable.no,"posicion actual",actualNuevo.ensable.Actual)
 
-            elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) > actualNuevo.ensable.destino:
-              actualNuevo.ensable.Actual -= 1  
-              print("Line",actualNuevo.ensable.no,"Mover brazo a",actualNuevo.ensable.Actual)
+            Registro = r.register(CSegs, " Mover brazo a " + str(actualNuevo.ensable.Actual))
+            actualNuevo.ensable.registro.insertar(Registro) 
 
-              Registro = r.register(CSegs, " Mover brazo a " + str(actualNuevo.ensable.Actual))
-              actualNuevo.ensable.registro.insertar(Registro) 
-              
+          elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) == actualNuevo.ensable.destino :
+            if  actualNuevo.ensable.Prioridad:
 
-            elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) == actualNuevo.ensable.destino :
-              if  actualNuevo.ensable.Prioridad:
+              if setPrimeaVezEnsablar:
+                actualNuevo.ensable.Timeout = actualNuevo.ensable.tiempoE
+                setPrimeaVezEnsablar = False
 
-                if Ensablar == False:
-                  actualNuevo.ensable.Timeout = actualNuevo.ensable.tiempoE
-                  
-                  Ensablar = True
-
+              if actualNuevo.ensable.Timeout > 0:
                 actualNuevo.ensable.Timeout -= 1
+                if actualNuevo.ensable.Timeout == 0:
 
-                if  actualNuevo.ensable.Timeout == 0:
-                  print("Linea",actualNuevo.ensable.no, "EnsamblarF" )
-                  Ensablar = False
-                  actualizar = True
-                  actualizarTimepo = True
-                  ubicacionaUX = actualNuevo
+                 
+                
+                  EstadoContinuar = False
+                  actualNuevo.ensable.noEnsamble =  PActual.elaboracion.NuevoCompoennete(int(actualNuevo.ensable.no))
+                  #print(actualNuevo.ensable.noEnsamble, " -----" ,actualNuevo.ensable.no)
+                  PActual.elaboracion.buscarVerificado(actualNuevo.ensable.noEnsamble)
+                  PActual.elaboracion.ActualizarAnteriores(actualNuevo.ensable.noEnsamble)
+            
+                  actualNuevo.ensable.destino =  PActual.elaboracion.NuevoDestino(int(actualNuevo.ensable.no))
+                  
+                  
 
-                  Registro = r.register(CSegs, " Ensamblar " + str(actualNuevo.ensable.Actual))
+
+                  #Comprobar si hay alguno con destino----------------------------------------------------------------------------------
+                  actualUtlimo = self.primero
+                  while actualUtlimo != None:
+                      if actualUtlimo.ensable.destino != 0:
+                        EstadoContinuar = True
+                      
+                      #print("no: ", actualUtlimo.ensable.no,"destino: ", actualUtlimo.ensable.destino, " noEnsamble",actualUtlimo.ensable.noEnsamble )
+
+                      actualUtlimo = actualUtlimo.siguiente
+
+                  if EstadoContinuar == False:
+                    ElbaFinalizado == True
+                    ElboracionProgrsss == False
+                    num = CSegs
+                    self.recorrerRegistro()
+                    self.reiniciar()
+                    print("FINALIZA")
+                   
+                    break
+                  
+
+                  #Fin comprobacion------------------------------------------------------------------------------------------------------
+                  
+                  self.NuevaPrioridad(PActual)
+                  actualNuevo.ensable.Prioridad = False
+                  print("Line",actualNuevo.ensable.no, "Tiempo Temrinado" )
+
+                  Registro = r.register(CSegs, " Ensamblando " )
                   actualNuevo.ensable.registro.insertar(Registro) 
+                  
+                  
                 else:
-                  print("Linea",actualNuevo.ensable.no, "Ensamblar" )
-                  Registro = r.register(CSegs, " Ensamblar " + str(actualNuevo.ensable.Actual))
+                  print("Line",actualNuevo.ensable.no, "Ensamblando TR",actualNuevo.ensable.Timeout )
+
+
+                  Registro = r.register(CSegs, " Ensamblando " )
                   actualNuevo.ensable.registro.insertar(Registro) 
-              
-              else:
-                print("Linea",actualNuevo.ensable.no, "No hacer nada")
+
+              elif actualNuevo.ensable.Timeout == 0:
+                setPrimeaVezEnsablar = True
+
+                print("Linea",actualNuevo.ensable.no, "Ensamblado a esperaA",actualNuevo.ensable.Actual )
+                
                 
 
-                Registro = r.register(CSegs, " No hacer nada " )
-                actualNuevo.ensable.registro.insertar(Registro) 
-            else:
                 
-                
+              #print("Line",actualNuevo.ensable.no, "Ensamblado" )
               
-              print("Linea",actualNuevo.ensable.no, "No hacer nada")
+            else:
+              print("Linea",actualNuevo.ensable.no, "Ensamblado a espera",actualNuevo.ensable.Actual )
+
               Registro = r.register(CSegs, " No hacer nada " )
               actualNuevo.ensable.registro.insertar(Registro) 
+          actualNuevo = actualNuevo.siguiente
+        #fin recorrer=-----------------------
 
-              #Fin comprobacion------------------------------------------------------------------------------------------------------
-            
-            actualNuevo = actualNuevo.siguiente
-          #fin recorrer=-----------------------
-
-    
-        
-
-        if CSegs == num: 
+       
+        if CSegs == num or ElbaFinalizado== True:
+          #PActual.elaboracion.recorrer()
+          #self.recorrer()
           ElboracionProgrsss = False
           break
 
@@ -239,7 +232,7 @@ class lista_brazos:
       while actualNuevo != None:
         if actualNuevo.ensable.no == int( PActual.elaboracion.InicizarlizarLinea()):
           actualNuevo.ensable.Prioridad =  True
-          #actualNuevo.ensable.noEnsamble =  int( PActual.elaboracion.InicizarlizarPosicionEn())
+          actualNuevo.ensable.noEnsamble =  int( PActual.elaboracion.InicizarlizarPosicionEn())
           
         actualNuevo = actualNuevo.siguiente
       #fin inicializar=-----------------------

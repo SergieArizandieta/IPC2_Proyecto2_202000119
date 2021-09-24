@@ -20,7 +20,7 @@ if __name__ == "__main__":
         #cargarListasSimulacino(txt)
 
         c.LLineas.ElaborarManual("Guitarra")
-        #c.LLineas.ElaborarManual("Piano")
+        c.LLineas.ElaborarManual("Piano")
     
         print("\n\nExito\n\n")
         
