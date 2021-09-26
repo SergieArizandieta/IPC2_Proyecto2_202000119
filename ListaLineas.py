@@ -1,10 +1,13 @@
 from tkinter.constants import NONE
 from xml.etree.ElementTree import register_namespace
 import xml.etree.cElementTree as ET
+from os import system
 
 import cargaMaquina as c
 import RegistroLineas as r
 import cargaSimulacion as s
+
+
 
 firsTime = True
 CantidadMasico = 0
@@ -80,7 +83,7 @@ class lista_brazos:
       anterior = actual
       actual = actual.siguiente
       if actual is None:
-        print("No se encontro la persona con el no:", no)
+        print("No se encontroel producto:", no)
         break
     if actual is not None:
       if actual.ensable.no == no:
@@ -108,14 +111,12 @@ class lista_brazos:
 
       self.Inicializar(PActual)
       self.AgregarDestino(PActual)
-      self.recorrer()
+      #self.recorrer()
       
       while ElboracionProgrsss == True :
         CSegs += 1
         EstadoContinuar = False
 
-      
-        
         print("Segundo",CSegs )
         #Comprobar si hay alguno con destino----------------------------------------------------------------------------------
         actualUtlimo = self.primero
@@ -126,23 +127,18 @@ class lista_brazos:
 
         if EstadoContinuar == False and ElbaFinalizado == False:
           ElbaFinalizado == True
-          
           num = CSegs
           
-          #self.recorrerRegistro()
           self.Exportar(producto,tipo)
-          global firsTime
-          firsTime = False
+         
+
           self.reiniciar()
-          
           
           print("FINALIZA")
           print("\n\n\n")
-          
-
+        
         if actualizarTimepo:
           tiempoAUX  = CSegs
-
 
         #Recorrer los que tengan destino-------------------------
         actualNuevo= self.primero
@@ -159,8 +155,6 @@ class lista_brazos:
 
               ubicacionaUX.ensable.Prioridad = False
               self.NuevaPrioridad(PActual)
-              
-              #self.recorrer()
 
             if actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) < actualNuevo.ensable.destino:
               actualNuevo.ensable.Actual += 1  
@@ -210,8 +204,6 @@ class lista_brazos:
                 actualNuevo.ensable.registro.insertar(Registro) 
             else:
                 
-                
-              
               print("Linea",actualNuevo.ensable.no, "No hacer nada")
               Registro = r.register(CSegs, " No hacer nada " )
               actualNuevo.ensable.registro.insertar(Registro) 
@@ -221,23 +213,10 @@ class lista_brazos:
             actualNuevo = actualNuevo.siguiente
           #fin recorrer=-----------------------
 
-    
-        
-
         if CSegs == num: 
+          
           ElboracionProgrsss = False
           break
-
-        """if  ElbaFinalizado== True:
-          #PActual.elaboracion.recorrer()
-          #self.recorrer()
-          ElboracionProgrsss = False
-          break"""
-        
-        
-        #ElbaFinalizado = True
-    
-    #print(c.Lproductos.primero.producto.nombre)
 
   def AgregarDestino(self,PActual):
      #Nueva prioridad-------------------------
@@ -277,16 +256,18 @@ class lista_brazos:
     #Terminando Destino=-----------------------
 
   def reiniciar(self):
+    
     actual= self.primero
     while actual != None:
-     
+      
       actual.ensable.Actual=0
       actual.ensable.Prioridad= False
       actual.ensable.Timeout= 0
       actual.ensable.destino = 0
       actual.ensable.noEnsamble = 0
+      actual.ensable.registro.clean()
       actual = actual.siguiente
-
+      
     c.Lproductos.clean()
 
   def LineasTotales(self):
@@ -298,9 +279,7 @@ class lista_brazos:
       actual = actual.siguiente
     return aux
       
-  def reporte(self):
-    
-    
+  def reporte(self,producto):
     delete= True
     actualNew= self.primero
     while actualNew != None:
@@ -316,9 +295,10 @@ class lista_brazos:
 
     Reporte = ""
     LineasTot = self.LineasTotales()
-   
 
-    Reporte = ' <table class="steelBlueCols"><thead><tr>  <th>Segundo</th>'
+    Reporte = '<center><h6 class=\"titulos\" ><b>' +  str(producto) + '</b></h6>'
+
+    Reporte += ' <table class="steelBlueCols"><thead><tr>  <th>Segundo</th>'
 
     for x in range(0+1,LineasTot+1):
       Reporte += '   <th>Linea ' + str(x) + '</th> '
@@ -342,7 +322,7 @@ class lista_brazos:
   def Exportar(self,producto,tipo):
     #print("EXPORTTTTTJDSSSSSSSSSSSSSSSSSSS")
     self.exportarxmls(producto,tipo)
-    Reporte = self.reporte()
+    Reporte = self.reporte(producto)
 
     ReporteFinal = htmlInicial + Reporte + htmlFinal
     if tipo == "MASIVO":
@@ -355,7 +335,6 @@ class lista_brazos:
 
   def exportarxmls(self,producto,tipo):
 
-    try:
         if tipo == "MASIVO":
           global firsTime
           global CantidadMasico
@@ -390,6 +369,7 @@ class lista_brazos:
               actual = actual.siguiente
 
           if CantidadMasico == CantidadAux:
+            
             def Bonito(elemento, identificador='  '):
                 validar = [(0, elemento)]  
 
@@ -405,9 +385,16 @@ class lista_brazos:
                     validar[0:0] = children 
 
             Bonito(rootM)
+         
             
             archio = ET.ElementTree(rootM) 
             archio.write("./XML_Generado/"  + "MASIVO" + '.xml', encoding='UTF-8')
+            s.LsitadoSimulacio.clean()
+            firsTime = True
+            CantidadMasico = 0
+            CantidadAux = 0
+            rootM = None
+            ListadoPorductosM =None
 
         if tipo == "INDIVIDUAL":
           root = ET.Element("SalidaSimunlacion")
@@ -450,8 +437,195 @@ class lista_brazos:
           archio = ET.ElementTree(root) 
           archio.write("./XML_Generado/"  + str(producto)+"_"+ str(tipo) + '.xml', encoding='UTF-8')
         
-    except Exception:
-        print("Error al genrar XML")
+ 
+    
+  def ReporteGraphivz(self,producto,segundo): 
+    self.reiniciar()
+    
+    print("PRODUCTO Grapica", producto)
+    num = 0
+    ElboracionProgrsss = True
+    ElbaFinalizado = False
+    CSegs = 0
+
+    Ensablar = False
+    actualizar = False
+    tiempoAUX =0
+    actualizarTimepo = False
+    ubicacionaUX = None
+    EstadoContinuar = False
+  
+    PActual = c.Lproductos.buscar(producto)
+    if PActual is not None:
+      #PActual.elaboracion.recorrer()
+
+      self.Inicializar(PActual)
+      self.AgregarDestino(PActual)
+      #self.recorrer()
+      
+      while ElboracionProgrsss == True :
+        CSegs += 1
+        EstadoContinuar = False
+
+        print("Segundo",CSegs )
+        #Comprobar si hay alguno con destino----------------------------------------------------------------------------------
+        actualUtlimo = self.primero
+        while actualUtlimo != None:
+            if actualUtlimo.ensable.destino != 0:
+              EstadoContinuar = True
+            actualUtlimo = actualUtlimo.siguiente
+
+        if EstadoContinuar == False and ElbaFinalizado == False:
+          ElbaFinalizado == True
+          num = CSegs
+          
+          self.GeneraraGrafo(PActual.elaboracion.ObtenerEnsamblados(),producto)
+          self.reiniciar()
+          
+          print("FINALIZA")
+          print("\n\n\n")
+        
+        if actualizarTimepo:
+          tiempoAUX  = CSegs
+
+        #Recorrer los que tengan destino-------------------------
+        actualNuevo= self.primero
+        if EstadoContinuar:
+          while actualNuevo != None:
+            
+            if actualizar  and  tiempoAUX == CSegs:
+              ubicacionaUX.ensable.noEnsamble =  PActual.elaboracion.NuevoCompoennete(int(ubicacionaUX.ensable.no))
+              PActual.elaboracion.buscarVerificado(ubicacionaUX.ensable.noEnsamble)
+              PActual.elaboracion.ActualizarAnteriores(ubicacionaUX.ensable.noEnsamble)
+              tiempoAUX = 0
+              actualizar = False
+              ubicacionaUX.ensable.destino =  PActual.elaboracion.NuevoDestino(int(ubicacionaUX.ensable.no))
+
+              ubicacionaUX.ensable.Prioridad = False
+              self.NuevaPrioridad(PActual)
+
+            if actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) < actualNuevo.ensable.destino:
+              actualNuevo.ensable.Actual += 1  
+              print("Line",actualNuevo.ensable.no,"Mover brazo a",actualNuevo.ensable.Actual)
+
+              Registro = r.register(CSegs, " Mover brazo a Componente " + str(actualNuevo.ensable.Actual))
+              actualNuevo.ensable.registro.insertar(Registro) 
+              
+
+            elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) > actualNuevo.ensable.destino:
+              actualNuevo.ensable.Actual -= 1  
+              print("Line",actualNuevo.ensable.no,"Mover brazo a",actualNuevo.ensable.Actual)
+
+              Registro = r.register(CSegs, " Mover brazo a Componente " + str(actualNuevo.ensable.Actual))
+              actualNuevo.ensable.registro.insertar(Registro) 
+              
+
+            elif actualNuevo.ensable.destino != 0 and int(actualNuevo.ensable.Actual) == actualNuevo.ensable.destino :
+              if  actualNuevo.ensable.Prioridad:
+
+                if Ensablar == False:
+                  actualNuevo.ensable.Timeout = actualNuevo.ensable.tiempoE
+                  
+                  Ensablar = True
+
+                actualNuevo.ensable.Timeout -= 1
+
+                if  actualNuevo.ensable.Timeout == 0:
+                  print("Linea",actualNuevo.ensable.no, "EnsamblarF" )
+                  Ensablar = False
+                  actualizar = True
+                  actualizarTimepo = True
+                  ubicacionaUX = actualNuevo
+
+                  Registro = r.register(CSegs, " Ensamblar Componente " + str(actualNuevo.ensable.Actual))
+                  actualNuevo.ensable.registro.insertar(Registro) 
+                else:
+                  print("Linea",actualNuevo.ensable.no, "Ensamblar" )
+                  Registro = r.register(CSegs, " Ensamblar Componente " + str(actualNuevo.ensable.Actual))
+                  actualNuevo.ensable.registro.insertar(Registro) 
+              
+              else:
+                print("Linea",actualNuevo.ensable.no, "No hacer nada")
+                
+
+                Registro = r.register(CSegs, " No hacer nada " )
+                actualNuevo.ensable.registro.insertar(Registro) 
+            else:
+                
+              print("Linea",actualNuevo.ensable.no, "No hacer nada")
+              Registro = r.register(CSegs, " No hacer nada " )
+              actualNuevo.ensable.registro.insertar(Registro) 
+
+              #Fin comprobacion------------------------------------------------------------------------------------------------------
+            
+            actualNuevo = actualNuevo.siguiente
+          #fin recorrer=-----------------------
+
+        if CSegs == num or CSegs ==  segundo:
+          if  CSegs == segundo and segundo!= num:
+            firsTime = False
+            self.GeneraraGrafo(PActual.elaboracion.ObtenerEnsamblados(),producto)
+            self.reiniciar()
+            ElboracionProgrsss = False
+          break
+
+  def GeneraraGrafo(self,tetxo,producto):
+    #print( tetxo)
+    aux =0
+    contador = 0
+    auxtexto = ""
+    graphviz = ""
+
+
+    graphviz +='''digraph L{
+    node[shape=box fillcolor="#4ECBF7" style =filled]
+    subgraph cluster_p{
+        label= "Reporte de cola de secuencia ''' + producto + ''' "
+        bgcolor = "#FF7878"\n'''
+
+    if tetxo != "":
+      for txt in tetxo:
+        aux +=1
+        if aux<= 4:
+          auxtexto += txt
+        if aux ==4:
+        
+          contador +=1
+          graphviz += ('Columna' + str(contador) + '[label =' + auxtexto  + ',group=' + str(contador+1) + '];\n')
+          auxtexto =""
+          aux=0
+      graphviz += "\n"
+
+      for x in range(1,contador):
+        graphviz +=('Columna' + str(x) + "->" +'Columna' + str(x+1) +";\n" )
+
+      graphviz +="{rank=same;"
+
+      for x in range(1,contador+1):
+        graphviz +=('Columna' + str(x)  + ";")
+
+      graphviz +="}\n } }"
+    else:
+      graphviz += '''Columna1[label =No_hay_ensambles,group=2];
+
+        {rank=same;Columna1;}\n } }'''
+    
+    #print(graphviz)
+
+    print("Reporte de cola de secuencia")
+    print("Grafo generado...abriendo\n")
+    ruta = "./Diagramas/"
+
+    DotName = "ReporteColaSecuencia" + producto + '.dot'
+    ImgName = "ReporteColaSecuencia" + producto+ '.png'
+    rutacmdImg = "Diagramas/" + ImgName
+    rutacmdImg = '"' + rutacmdImg + '"'
+    miArchivo= open(ruta + DotName,'w')
+    miArchivo.write(graphviz)
+    miArchivo.close()
+    
+    system('dot -Tpng ' + ruta+  DotName + ' -o ' + ruta+ ImgName)
+    system('"' + rutacmdImg + '"\n')
     
 htmlInicial = """<!DOCTYPE html>
 <html>

@@ -39,6 +39,25 @@ class Listado_SimulacionP:
       actual = actual.siguiente
     return cantidad
 
+  def clean(self):
+    actualRecorreor = self.primero
+    while actualRecorreor != None:
+
+        actual = self.primero
+        anterior = None
+
+        while actual and actual.producto.Producto !=  actualRecorreor.producto.Producto:
+            anterior = actual
+            actual = actual.siguiente
+        
+        if anterior is None:
+            self.primero = actual.siguiente
+        elif actual:
+            anterior.siguiente = actual.siguiente
+            actual.siguiente = None
+
+        actualRecorreor = actualRecorreor.siguiente  
+
   def Simular(self):
         actual= self.primero
         while actual != None:
