@@ -63,8 +63,8 @@ def cargarListas(xmlRuta):
                     Lproductos.insertar(e1)
                         
         
-        LLineas.recorrer()
-        Lproductos.recorrer()
+        #LLineas.recorrer()
+        #Lproductos.recorrer()
         
         print("\nArchivo Cargado con Exito\n")
         return True

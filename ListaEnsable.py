@@ -49,8 +49,22 @@ class lista_enzamblar:
     while actual != None:
       #print("Posicion ensamble: ", actual.ensamble.posicionE, "posicion linea: ", actual.ensamble.Linea ,"posicion componente: ", actual.ensamble.posicionC, "Anterioe", actual.ensamble.Anterior)
       #print("Posicion ensamble: ", actual.ensamble.posicionE, "posicion linea: ", actual.ensamble.Linea ,"posicion componente: ", actual.ensamble.posicionC, "ensablado", actual.ensamble.Verificado)
-      print("Posicion ensamble: ", actual.ensamble.posicionE, "posicion linea: ", actual.ensamble.Linea ,"posicion componente: ", actual.ensamble.posicionC, "Anterior", actual.ensamble.Anterior, "PsoicionAnterior",actual.ensamble.AnteriorPosicionE, "ensablado", actual.ensamble.Verificado )
+      #print("Posicion ensamble: ", actual.ensamble.posicionE, "posicion linea: ", actual.ensamble.Linea ,"posicion componente: ", actual.ensamble.posicionC, "Anterior", actual.ensamble.Anterior, "PsoicionAnterior",actual.ensamble.AnteriorPosicionE, "ensablado", actual.ensamble.Verificado )
+       
+      print("L" + str(actual.ensamble.Linea) +  "C" + str(actual.ensamble.posicionC), actual.ensamble.Verificado )
+
       actual = actual.siguiente
+
+  def ObtenerEnsamblados(self):
+      texto=""
+      actual= self.primero
+      while actual != None:
+    
+        #print("L" + str(actual.ensamble.Linea) +  "C" + str(actual.ensamble.posicionC), " E:" + str(actual.ensamble.Verificado))
+        if actual.ensamble.Verificado == True:
+          texto +=  ("L" + str(actual.ensamble.Linea) +  "C" + str(actual.ensamble.posicionC))
+        actual = actual.siguiente
+      return texto
 
   def Limpiar(self):
     actual= self.primero
@@ -59,7 +73,7 @@ class lista_enzamblar:
       actual.ensamble.AnteriorPosicionE=0
       actual.ensamble.Verificado=False
       actual = actual.siguiente
-#FUNCIAONLIDADES-------------------------------------------------------------------------------------------------------------------
+  #FUNCIAONLIDADES-------------------------------------------------------------------------------------------------------------------
   def NuevoDestino(self,posicionE):
     actual = self.primero
     anterior = None
@@ -122,7 +136,6 @@ class lista_enzamblar:
             if actualNuevo.ensamble.Linea == posicionE and actualNuevo.ensamble.Anterior == True and actualNuevo.ensamble.AnteriorPosicionE == elaboracion and posicionE ==  actualNuevo.ensamble.Linea:
               actualNuevo.ensamble.Anterior = False
               
-  
   def nuevaPrioridad(self):
     try:
       actual = self.primero

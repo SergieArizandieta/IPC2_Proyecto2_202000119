@@ -2,6 +2,7 @@
 from tkinter import * 
 from tkinter import ttk
 from PIL import ImageTk, Image
+from tkinter import messagebox
 
 import main
 import cargaMaquina as cm
@@ -41,15 +42,33 @@ def ventanas():
             global Nombre
             Nombre = ProductosIndividuales.get()
             ComboText= ProductosIndividuales.get()
-            print("Individual - ",ComboText)
+            #print("Individual - ",ComboText)
 
             cm.LLineas.ElaborarManual(ComboText,"INDIVIDUAL")
             
-        def ReporteSecuencia():
-            print("Reporte")
-            cm.LLineas.reporte()
+        def ReporteSecuenciaIn():
+            ComboText= ReporteSecuencia.get()
+            Boxtextt = TextBoxSeg.get("1.0",'end-1c')
             
-            
+            if Boxtextt == "" or ComboText == "":
+                messagebox.showinfo(title="Error", message="Ingrese un valor")
+            elif isNumero(Boxtextt) == False:
+                messagebox.showinfo(title="Error", message="Ingrese un numero")
+            else:
+                if int(Boxtextt) > 0:
+                    cm.LLineas.ReporteGraphivz(ComboText,int(Boxtextt))
+                else:
+                    messagebox.showinfo(title="Error", message="Ingrese un numero mayor a 0")
+    
+        def isNumero(txt):
+            try:
+                int(txt)
+                it_is = True
+                return it_is
+            except ValueError:
+                it_is = False
+                return it_is
+
 
         def OperarMasivo():
             print("Masivo")
@@ -147,7 +166,7 @@ def ventanas():
         Label(pes3,text = "Seleccione prodcuto",fg="Gray",font=("Popins",12)).place(x=30, y= 120)
 
         Label(pes3,text = "Ingrese el segundo que desea generrar el reporte",fg="Gray",font=("Popins",12)).place(x=30, y= 200)
-        Button(pes3,text="Producir",command= ReporteSecuencia).place(x=230, y= 300)
+        Button(pes3,text="Producir",command= ReporteSecuenciaIn).place(x=230, y= 300)
 
         TextBoxSeg = Text(pes3, height = 1, width = 10)
         TextBoxSeg.place(x=30, y= 240)
