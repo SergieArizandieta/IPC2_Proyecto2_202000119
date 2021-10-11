@@ -569,14 +569,14 @@ class lista_brazos:
             ElboracionProgrsss = False
           break
 
+
   def GeneraraGrafo(self,tetxo,producto):
     #print( tetxo)
-    aux =0
     contador = 0
     auxtexto = ""
     graphviz = ""
-
-
+    estado = 0
+    repetir= True
     graphviz +='''digraph L{
     node[shape=box fillcolor="#4ECBF7" style =filled]
     subgraph cluster_p{
@@ -585,17 +585,33 @@ class lista_brazos:
 
     if tetxo != "":
       for txt in tetxo:
-        aux +=1
-        if aux<= 4:
-          auxtexto += txt
-        if aux ==4:
-        
-          contador +=1
-          graphviz += ('Columna' + str(contador) + '[label =' + auxtexto  + ',group=' + str(contador+1) + '];\n')
-          auxtexto =""
-          aux=0
+        repetir= True
+        while repetir:
+          if estado ==0:
+            if txt == "L":
+              estado=1
+              auxtexto += txt
+          elif estado ==1:
+            if (ord(txt) >= 48 and ord(txt) <= 57):
+              auxtexto += txt
+            else:
+              if txt == "C":
+                estado=2
+                auxtexto += txt 
+          elif estado ==2:
+            if (ord(txt) >= 48 and ord(txt) <= 57):
+              auxtexto += txt
+            else:
+              contador +=1
+              graphviz += ('Columna' + str(contador) + '[label =' + auxtexto  + ',group=' + str(contador+1) + '];\n')
+              auxtexto =""
+              graphviz += "\n"
+              estado = 0
+              continue
+          repetir= False
+      contador +=1
+      graphviz += ('Columna' + str(contador) + '[label =' + auxtexto  + ',group=' + str(contador+1) + '];\n')
       graphviz += "\n"
-
       for x in range(1,contador):
         graphviz +=('Columna' + str(x) + "->" +'Columna' + str(x+1) +";\n" )
 
@@ -627,6 +643,7 @@ class lista_brazos:
     system('dot -Tpng ' + ruta+  DotName + ' -o ' + ruta+ ImgName)
     system('"' + rutacmdImg + '"\n')
     
+
 htmlInicial = """<!DOCTYPE html>
 <html>
 

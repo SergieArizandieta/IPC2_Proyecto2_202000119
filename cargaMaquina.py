@@ -81,86 +81,113 @@ def purificacion(text,LineasDeclaradas):
     agregar = True
     #print(text)
     estado =0 
+    txtTemp= ""
+    
     for txt in text:
-        if estado ==0 :
-            if ord(txt) == 76: #L
-                contador +=1 
-                estado = 1
-            else:
-                if ord(txt) == 32: #
-                    pass
+        repetir = True
+        while repetir:
+            if estado==0:
+                if ord(txt) == 76: #L
+                    estado = 1   
+                    contador +=1  
+
                 else:
-                    agregar = False
-                    print("Se ingreso caracteres fuera de paraemetros", txt)
-          
-        elif estado ==1:
-            if isNumero(txt):
-                estado = 3
-                if LineasDeclaradas>=int(txt):
-                    linea = int(txt)
+                    if ignorar(txt):
+                        pass
+                    else: 
+                        print("Error")
+            
+            elif estado == 1:
+                if (isNumero(txt)):
+                    txtTemp +=   txt
+                    estado = 2
+                else:
+                    if ignorar(txt):
+                        pass
+                    else: 
+                        print("Error")
+                    
+            elif estado ==2:
+                if (isNumero(txt)):
+                    txtTemp +=   txt
                     
                 else:
-                    agregar = False
-                    print("No existe la linea para enasmblar", txt)
-            else:
-                if ord(txt) == 32: #
-                    pass
+                    if ignorar(txt):
+                        pass
+                    else: 
+                       if LineasDeclaradas>=int(txtTemp):
+                        linea = int(txtTemp)
+                        txtTemp = ""
+                        estado = 3
+                        continue
+
+            elif estado ==3:
+                if ord(txt) == 112: #p
+                    estado = 4
                 else:
-                    agregar = False
-                    print("Se ingreso caracteres fuera de paraemetros", txt)
-               
-        elif estado ==3:
-            if ord(txt) == 112: #p
-                estado = 4
-            else:
-                if ord(txt) == 32: #
-                    pass
-                else:
-                    agregar = False
-                    print("Se ingreso caracteres fuera de paraemetros", txt)
+                    if ignorar(txt):
+                        pass
+                    else: 
+                        print("Error")     
                 
-        elif estado ==4:
-            if ord(txt) == 67: #C
-                estado = 5
-            else:
-                if ord(txt) == 32: #
-                    pass
+            elif estado ==4:
+                if ord(txt) == 67: #C
+                    estado = 5
                 else:
-                    agregar = False
-                    print("Se ingreso caracteres fuera de paraemetros", txt)
-               
-        elif estado ==5:
-            if isNumero(txt):
-                estado = 6
-                componenete = int(txt)
-            else:
-                if ord(txt) == 32: #
-                    pass
+                    if ignorar(txt):
+                        pass
+                    else: 
+                        print("Error")  
+
+            elif estado ==5:
+                if (isNumero(txt)):
+                    txtTemp +=  txt
                 else:
-                    agregar = False
-                    print("Se ingreso caracteres fuera de paraemetros", txt)
-               
-        elif estado ==6:
-            if ord(txt) == 112: #p
-                estado = 0
-                e1 = ensamble(contador,linea,componenete,False)
-                LEnsamble.insertar(e1)
-            else:
-                if ord(txt) == 32: #
-                    pass
+                    if ignorar(txt):
+                        pass
+                    else: 
+                        estado = 6
+                        componenete = int(txtTemp) 
+                        txtTemp= ""
+                        continue
+            
+            elif estado ==6:
+                if ord(txt) == 112: #p
+                    estado = 0
+                    e1 = ensamble(contador,linea,componenete,False)
+                    LEnsamble.insertar(e1)
                 else:
-                    agregar = False
-                    print("Se ingreso caracteres fuera de paraemetros", txt)
+                    if ord(txt) == 32: #
+                        pass
+                    else:
+                        agregar = False
+                        print("Se ingreso caracteres fuera de paraemetros", txt)
                 
-        else:
-            if ord(txt) == 32: #
-                pass
-            else:
-                print("Se ingreso caracteres fuera de paraemetros", txt)
+
+            # Salto de Linea
+            if (ord(txt) == 10):
+                repetir = False
+                continue
+            # Tab Horizontal
+            elif (ord(txt) == 9):
+                repetir = False
+                continue
+            # Espacio
+            elif (ord(txt) == 32):
+                repetir = False
+                continue
+            repetir = False 
     if agregar:
+        LEnsamble.recorrer()
         return LEnsamble
     else: 
-        return None
+        return None           
+
+def ignorar(txt):
+    if ord(txt) == 32 or ord(txt) == 10 or ord(txt) == 9 or txt == '~':
+        return True
+    else: 
+         return False
 
 def isNumero(txt):
     if ((ord(txt) >= 48 and ord(txt) <= 57)):

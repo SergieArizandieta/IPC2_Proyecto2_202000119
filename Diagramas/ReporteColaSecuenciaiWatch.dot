@@ -1,0 +1,51 @@
+digraph L{
+    node[shape=box fillcolor="#4ECBF7" style =filled]
+    subgraph cluster_p{
+        label= "Reporte de cola de secuencia iWatch "
+        bgcolor = "#FF7878"
+Columna1[label =L11C18,group=2];
+
+Columna2[label =L6C5,group=3];
+
+Columna3[label =L6C3,group=4];
+
+Columna4[label =L9C8,group=5];
+
+Columna5[label =L12C17,group=6];
+
+Columna6[label =L20C3,group=7];
+
+Columna7[label =L15C14,group=8];
+
+Columna8[label =L13C5,group=9];
+
+Columna9[label =L14C5,group=10];
+
+Columna10[label =L20C5,group=11];
+
+Columna11[label =L19C9,group=12];
+
+Columna12[label =L1C1,group=13];
+
+Columna13[label =L5C3,group=14];
+
+Columna14[label =L13C7,group=15];
+
+Columna15[label =L13C6,group=16];
+
+Columna1->Columna2;
+Columna2->Columna3;
+Columna3->Columna4;
+Columna4->Columna5;
+Columna5->Columna6;
+Columna6->Columna7;
+Columna7->Columna8;
+Columna8->Columna9;
+Columna9->Columna10;
+Columna10->Columna11;
+Columna11->Columna12;
+Columna12->Columna13;
+Columna13->Columna14;
+Columna14->Columna15;
+{rank=same;Columna1;Columna2;Columna3;Columna4;Columna5;Columna6;Columna7;Columna8;Columna9;Columna10;Columna11;Columna12;Columna13;Columna14;Columna15;}
+ } }
